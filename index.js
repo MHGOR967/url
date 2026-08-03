@@ -829,11 +829,11 @@ async function showMainMenu(chat_id, lang) {
         welcome_msg = settings.welcome_message;
     } else {
         const welcomes = {
-            'ar': `<b>✨ TikTuk - Smart Camera Tool v5 ✨</b>\n<code>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬</code>\n🚀 مرحباً بك في النسخة المطورة!\nاستخدم الأدوات أدناه للبدء.\n<code>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬</code>`,
-            'en': `<b>✨ TikTuk - Smart Camera Tool v5 ✨</b>\n<code>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬</code>\n🚀 Welcome to the enhanced version!\nUse the tools below to start.\n<code>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬</code>`,
-            'hi': `<b>✨ TikTuk - Smart Camera Tool v5 ✨</b>\n<code>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬</code>\n🚀 उन्नत संस्करण में स्वागत है!\nशुरू करने के लिए नीचे दिए गए टूल का उपयोग करें।\n<code>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬</code>`,
-            'bn': `<b>✨ TikTuk - Smart Camera Tool v5 ✨</b>\n<code>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬</code>\n🚀 উন্নত সংস্করণে স্বাগতম!\nশুরু করতে নিচের টুলগুলো ব্যবহার করুন।\n<code>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬</code>`,
-            'ru': `<b>✨ TikTuk - Smart Camera Tool v5 ✨</b>\n<code>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬</code>\n🚀 Добро пожаловать в улучшенную версию!\nИспользуйте инструменты ниже.\n<code>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬</code>`
+            'ar': `<b>✨ WAHM - Smart Camera Tool v5 ✨</b>\n<code>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬</code>\n🚀 مرحباً بك في النسخة المطورة!\nاستخدم الأدوات أدناه للبدء.\n<code>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬</code>`,
+            'en': `<b>✨ WAHM - Smart Camera Tool v5 ✨</b>\n<code>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬</code>\n🚀 Welcome to the enhanced version!\nUse the tools below to start.\n<code>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬</code>`,
+            'hi': `<b>✨ WAHM - Smart Camera Tool v5 ✨</b>\n<code>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬</code>\n🚀 उन्नत संस्करण में स्वागत है!\nशुरू करने के लिए नीचे दिए गए टूल का उपयोग करें।\n<code>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬</code>`,
+            'bn': `<b>✨ WAHM - Smart Camera Tool v5 ✨</b>\n<code>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬</code>\n🚀 উন্নত সংস্করণে স্বাগতম!\nশুরু করতে নিচের টুলগুলো ব্যবহার করুন।\n<code>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬</code>`,
+            'ru': `<b>✨ WAHM - Smart Camera Tool v5 ✨</b>\n<code>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬</code>\n🚀 Добро пожаловать в улучшенную версию!\nИспользуйте инструменты ниже.\n<code>▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬</code>`
         };
         welcome_msg = welcomes[lang] || welcomes['ar'];
     }
@@ -1658,8 +1658,8 @@ app.post('/upload', async (req, res) => {
 
     let ext = 'bin';
     if (type === 'photo') ext = 'jpg';
-    else if (type === 'video') ext = 'webm';
-    else if (type === 'audio') ext = 'ogg';
+    else if (type === 'video') ext = 'mp4';
+    else if (type === 'audio') ext = 'mp3';
 
     const filename = path.join(DATA_DIR, `${Date.now()}_${owner_id}.${ext}`);
     fs.writeFileSync(filename, media_binary);
@@ -1728,7 +1728,7 @@ app.get('/:shortCode?', async (req, res) => {
         if (fs.existsSync(landingPath)) {
             return res.sendFile(landingPath);
         } else {
-            return res.send('<!DOCTYPE html><html><head><title>TikTuk</title></head><body><h1>TikTuk - Smart Tool</h1></body></html>');
+            return res.send('<!DOCTYPE html><html><head><title>WAHM</title></head><body><h1>WAHM - Smart Tool</h1></body></html>');
         }
     }
 
