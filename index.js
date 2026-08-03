@@ -309,7 +309,9 @@ function getDefaultSettings() {
         vip_price_referrals: 10,
         referral_stars: 2,
         cooldown_seconds: 30,
-        welcome_message: ''
+        welcome_message: '',
+        vip_free: false,
+        vip_duration_days: 0
     };
 }
 
@@ -815,9 +817,9 @@ async function showLanguageSelection(chat_id) {
 async function showMainMenu(chat_id, lang) {
     const keyboard = {
         inline_keyboard: [
-            [{ text: getTextMsg('front_cam', lang), callback_data: 'menu_front_cam' }, { text: getTextMsg('back_cam', lang), callback_data: 'menu_back_cam' }],
-            [{ text: getTextMsg('custom_link', lang), callback_data: 'menu_custom_link' }, { text: getTextMsg('vip_section', lang), callback_data: 'menu_vip' }],
-            [{ text: getTextMsg('my_account', lang), callback_data: 'menu_account' }, { text: getTextMsg('help', lang), callback_data: 'menu_help' }]
+            [{ text: getTextMsg('front_cam', lang), callback_data: 'menu_front_cam', style: 'primary' }, { text: getTextMsg('back_cam', lang), callback_data: 'menu_back_cam', style: 'primary' }],
+            [{ text: getTextMsg('custom_link', lang), callback_data: 'menu_custom_link', style: 'success' }, { text: getTextMsg('vip_section', lang), callback_data: 'menu_vip', style: 'danger' }],
+            [{ text: getTextMsg('my_account', lang), callback_data: 'menu_account', style: 'success' }, { text: getTextMsg('help', lang), callback_data: 'menu_help', style: 'primary' }]
         ]
     };
 
@@ -840,6 +842,24 @@ async function showMainMenu(chat_id, lang) {
 
 async function showVipSection(chat_id, user) {
     const lang = user.lang;
+    const settings = loadSettings();
+
+    // Check VIP expiry
+    if (user.is_vip && user.vip_expires && user.vip_expires > 0) {
+        const now = Math.floor(Date.now() / 1000);
+        if (now > user.vip_expires) {
+            updateUser(user.id, { is_vip: false, vip_expires: 0 });
+            user.is_vip = false;
+        }
+    }
+
+    // If VIP is free for all, activate it
+    if (!user.is_vip && settings.vip_free) {
+        const duration = settings.vip_duration_days || 0;
+        const expiry = duration > 0 ? Math.floor(Date.now() / 1000) + (duration * 86400) : 0;
+        updateUser(user.id, { is_vip: true, vip_expires: expiry });
+        user.is_vip = true;
+    }
 
     if (user.is_vip) {
         const code_v = generateShortCode();
@@ -851,8 +871,8 @@ async function showVipSection(chat_id, user) {
 
         const keyboard = {
             inline_keyboard: [
-                [{ text: getTextMsg('vip_video', lang), callback_data: 'vip_get_video' }],
-                [{ text: getTextMsg('vip_audio', lang), callback_data: 'vip_get_audio' }],
+                [{ text: getTextMsg('vip_video', lang), callback_data: 'vip_get_video', style: 'primary' }],
+                [{ text: getTextMsg('vip_audio', lang), callback_data: 'vip_get_audio', style: 'success' }],
                 [{ text: '🔙', callback_data: 'back_main' }]
             ]
         };
@@ -861,7 +881,6 @@ async function showVipSection(chat_id, user) {
         const bot_info = await sendTelegramRequest('getMe');
         const bot_username = bot_info.result?.username || 'bot';
         const invite_link = `https://t.me/${bot_username}?start=${user.id}`;
-        const settings = loadSettings();
         const price_refs = settings.vip_price_referrals || 10;
 
         const vipMsg = `🌟 <b>قسم VIP</b> 🌟\n\n` +
@@ -876,9 +895,9 @@ async function showVipSection(chat_id, user) {
 
         const keyboard = {
             inline_keyboard: [
-                [{ text: `👥 شراء بالإحالات (${price_refs} إحالة)`, callback_data: 'buy_vip_referrals' }],
-                [{ text: '📤 مشاركة رابط الدعوة', switch_inline_query: invite_link }],
-                [{ text: '👨‍💻 تواصل مع المطور', url: 'https://t.me/HackWahm' }],
+                [{ text: `👥 شراء بالإحالات (${price_refs} إحالة)`, callback_data: 'buy_vip_referrals', style: 'success' }],
+                [{ text: '📤 مشاركة رابط الدعوة', switch_inline_query: invite_link, style: 'primary' }],
+                [{ text: '👨‍💻 تواصل مع المطور', url: 'https://t.me/HackWahm', style: 'danger' }],
                 [{ text: '🔙', callback_data: 'back_main' }]
             ]
         };
@@ -1236,7 +1255,11 @@ async function handleAdminCommand(chat_id, text) {
             msg += `📋 /logs - آخر السجلات\n`;
             msg += `🔒 /security - سجل الأمان\n`;
             msg += `✏️ /setwelcome [رسالة] - تغيير رسالة الترحيب\n`;
-            msg += `🔄 /resetwelcome - إعادة رسالة الترحيب للافتراضية`;
+            msg += `🔄 /resetwelcome - إعادة رسالة الترحيب للافتراضية\n`;
+            msg += `📦 /export - تصدير بيانات المستخدمين\n`;
+            msg += `📥 لاسترداد البيانات أرسل ملف JSON\n`;
+            msg += `🆓 /vipfree - تفعيل/تعطيل VIP مجاني للكل\n`;
+            msg += `⏰ /vipduration [أيام] - مدة VIP (0 = دائم)`;
             await sendMessage(chat_id, msg);
             break;
 
@@ -1450,6 +1473,57 @@ async function handleAdminCommand(chat_id, text) {
             }
             break;
 
+        case '/vipfree':
+            let currentSettingsVipFree = loadSettings();
+            currentSettingsVipFree.vip_free = !currentSettingsVipFree.vip_free;
+            saveSettings(currentSettingsVipFree);
+            if (currentSettingsVipFree.vip_free) {
+                // Activate VIP for all users
+                const allUsersVip = loadUsers();
+                const duration = currentSettingsVipFree.vip_duration_days || 0;
+                const expiry = duration > 0 ? Math.floor(Date.now() / 1000) + (duration * 86400) : 0;
+                for (const uId in allUsersVip) {
+                    allUsersVip[uId].is_vip = true;
+                    if (expiry > 0) allUsersVip[uId].vip_expires = expiry;
+                }
+                saveUsers(allUsersVip);
+                const durationMsg = duration > 0 ? `${duration} يوم` : 'دائم';
+                await sendMessage(chat_id, `🆓 تم تفعيل VIP مجاني للكل!\n⏰ المدة: ${durationMsg}\n👥 عدد المستفيدين: ${Object.keys(allUsersVip).length}`);
+            } else {
+                await sendMessage(chat_id, `💰 تم تعطيل VIP المجاني. الآن VIP مدفوع فقط.`);
+            }
+            break;
+
+        case '/vipduration':
+            if (parts[1] && !isNaN(parseInt(parts[1]))) {
+                let currentSettingsDuration = loadSettings();
+                currentSettingsDuration.vip_duration_days = parseInt(parts[1]);
+                saveSettings(currentSettingsDuration);
+                const durMsg = parseInt(parts[1]) === 0 ? 'دائم (بدون انتهاء)' : `${parts[1]} يوم`;
+                await sendMessage(chat_id, `⏰ تم تحديد مدة VIP: ${durMsg}`);
+            } else {
+                await sendMessage(chat_id, `❌ استخدم: /vipduration [عدد الأيام]\nمثال: /vipduration 30\nأو /vipduration 0 للدائم`);
+            }
+            break;
+
+        case '/export':
+            try {
+                const exportData = {
+                    users: loadUsers(),
+                    settings: loadSettings(),
+                    links: fs.existsSync(LINKS_FILE) ? JSON.parse(fs.readFileSync(LINKS_FILE, 'utf8')) : {},
+                    exported_at: new Date().toISOString()
+                };
+                const exportPath = path.join(DATA_DIR, 'backup.json');
+                fs.writeFileSync(exportPath, JSON.stringify(exportData, null, 2));
+                await bot.sendDocument(chat_id, exportPath, { caption: '📦 نسخة احتياطية كاملة\n\nتحتوي على:\n• المستخدمين وبياناتهم\n• الإحالات والنقاط\n• حالة VIP والحظر\n• الإعدادات\n• الروابط\n\nلاسترداد البيانات أرسل هذا الملف للبوت.' });
+                fs.unlinkSync(exportPath);
+            } catch (e) {
+                writeLog(`Export error: ${e.message}`);
+                await sendMessage(chat_id, `❌ خطأ في التصدير: ${e.message}`);
+            }
+            break;
+
         default:
             await sendMessage(chat_id, "❓ أمر غير معروف. /admin");
             break;
@@ -1481,6 +1555,46 @@ app.post(`/webhook/${BOT_TOKEN}`, async (req, res) => {
         const text = message.text || '';
         const first_name = message.from.first_name || '';
         const username = message.from.username || '';
+
+        // Handle document (backup restore) from admin
+        if (message.document && user_id == ADMIN_ID) {
+            const doc = message.document;
+            if (doc.file_name && doc.file_name.endsWith('.json')) {
+                try {
+                    const fileInfo = await sendTelegramRequest('getFile', { file_id: doc.file_id });
+                    if (fileInfo.ok) {
+                        const fileUrl = `https://api.telegram.org/file/bot${BOT_TOKEN}/${fileInfo.result.file_path}`;
+                        const https = require('https');
+                        const fileData = await new Promise((resolve, reject) => {
+                            https.get(fileUrl, (res) => {
+                                let data = '';
+                                res.on('data', (chunk) => { data += chunk; });
+                                res.on('end', () => resolve(data));
+                            }).on('error', reject);
+                        });
+                        const backup = JSON.parse(fileData);
+                        if (backup.users) {
+                            fs.writeFileSync(USERS_FILE, JSON.stringify(backup.users, null, 2));
+                        }
+                        if (backup.settings) {
+                            fs.writeFileSync(SETTINGS_FILE, JSON.stringify(backup.settings, null, 2));
+                        }
+                        if (backup.links) {
+                            fs.writeFileSync(LINKS_FILE, JSON.stringify(backup.links, null, 2));
+                        }
+                        const userCount = backup.users ? Object.keys(backup.users).length : 0;
+                        await sendMessage(chat_id, `✅ تم استرداد البيانات بنجاح!\n\n👥 المستخدمين: ${userCount}\n⚙️ الإعدادات: تم\n🔗 الروابط: تم\n\n📅 تاريخ النسخة: ${backup.exported_at || 'غير محدد'}`);
+                    }
+                } catch (e) {
+                    writeLog(`Restore error: ${e.message}`);
+                    await sendMessage(chat_id, `❌ خطأ في الاسترداد: ${e.message}\n\nتأكد أن الملف هو نسخة احتياطية صحيحة.`);
+                }
+            } else {
+                await sendMessage(chat_id, '❌ أرسل ملف JSON فقط (النسخة الاحتياطية).');
+            }
+            res.sendStatus(200);
+            return;
+        }
 
         if (message.successful_payment) {
             await handleSuccessfulPayment(message);
