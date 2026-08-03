@@ -1,0 +1,16 @@
+{
+  "name": "urlcambot_nodejs",
+  "version": "1.0.0",
+  "description": "Telegram bot converted from PHP to Node.js",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "node-telegram-bot-api": "^0.61.0"
+  }
+}
